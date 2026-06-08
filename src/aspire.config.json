@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "DockerGameServer.AppHost/DockerGameServer.AppHost.csproj"
+  }
+}

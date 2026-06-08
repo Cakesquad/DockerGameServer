@@ -1,0 +1,12 @@
+services:
+  dockergameserver:
+    image: ${DOCKER_REGISTRY-}dockergameserver
+    build:
+      context: .
+      dockerfile: src/DockerGameServer/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=production
+      - ASPNETCORE_URLS=http://+:8080
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

@@ -1,0 +1,39 @@
+﻿@page "/register"
+
+<EditForm class="form" Model="model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <p class="card-subtitle">Register </p>
+    <p class="message">Fill in the form to create an account.</p>
+        <label>
+        <input class="input" @bind-value="model.FullName" typeof="text" placeholder="" required="" />
+        <span>Fullname</span>
+        </label>
+
+        <label>
+            <input class="input" @bind-value="model.Email" type="email" placeholder="" required="" />
+            <span>Email</span>
+        </label>
+
+        <label>
+            <input class="input" @bind-value="model.Password" type="password" placeholder="" required="" />
+            <span>Password</span>
+        </label>
+
+        <label>
+            <input class="input" @bind-value="model.ConfirmPassword" type="password" placeholder="" required="" />
+            <span>Confirm Password</span>
+        </label>
+
+        <button class="submit">Submit</button>
+        <p class="signin">Already have an account ? <a href="#">Signin</a> </p>
+</EditForm>
+
+@code {
+    [Inject] private UserService userService { get; set; } = default!;
+    private RegisterModel model = new();
+
+    private async Task OnValidSubmit()
+    {
+        await userService.CreateAsync(model);
+    }
+}

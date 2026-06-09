@@ -7,9 +7,9 @@ namespace DockerGameServer.Models.Database
         [NotMapped]
         public T Data { get; set; } = new T();
 
-        public byte[] EncryptedDataValue { get; set; } = default!;
-        public byte[] DataValueNonce { get; set; } = default!;
-        public byte[] EncryptedDataKey { get; set; } = default!;
-        public byte[] DataKeyNonce { get; set; } = default!;
+        public byte[] EncryptedDataValue { get; set; } = [];
+        public byte[] DataValueNonce { get; set; } = [];
+        public byte[] EncryptedDataKey { get; set; } = [];
+        public byte[] DataKeyNonce { get; set; } = [];
     }
 }

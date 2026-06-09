@@ -18,24 +18,25 @@ namespace DockerGameServer
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddScoped<EncryptionService>();
             builder.Services.AddScoped<EncryptionInterceptor>();
             builder.Services.AddScoped<TimestampInterceptor>();
-            builder.Services.AddScoped<EncryptionService>();
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
 
             builder.Services.AddHostedService<MigrationService>();
 
-			builder.Services.AddDbContext<AppDbContext>(
-                (serviceProvider, options) =>
-				{
-					var connectionString = builder.Configuration.GetConnectionString("PostgresDb");
+            builder.Services.AddDbContext<AppDbContext>(
+                         (serviceProvider, options) =>
+                {
+                    var connectionString = builder.Configuration.GetConnectionString("PostgresDb");
                     options.UseNpgsql(connectionString);
-                    options.AddInterceptors(serviceProvider.GetRequiredService<TimestampInterceptor>());
-                    options.AddInterceptors(serviceProvider.GetRequiredService<EncryptionInterceptor>());
+                    options.AddInterceptors(
+                        serviceProvider.GetRequiredService<TimestampInterceptor>(),
+                        serviceProvider.GetRequiredService<EncryptionInterceptor>());
                 });
 
-			var app = builder.Build();
+            var app = builder.Build();
 
             app.MapDefaultEndpoints();
 

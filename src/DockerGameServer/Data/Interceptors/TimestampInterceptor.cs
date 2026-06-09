@@ -10,9 +10,23 @@ namespace DockerGameServer.Data.Interceptors
             DbContextEventData eventData,
             InterceptionResult<int> result)
         {
-            var context = eventData.Context;
+            ApplyTimestamps(eventData.Context);
+            return result;
+        }
+
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
+        {
+            ApplyTimestamps(eventData.Context);
+            return ValueTask.FromResult(result);
+        }
+
+        private static void ApplyTimestamps(DbContext? context)
+        {
             if (context == null)
-                return result;
+                return;
 
             var utcNow = DateTime.UtcNow;
 
@@ -30,8 +44,6 @@ namespace DockerGameServer.Data.Interceptors
                     entry.Entity.UpdatedAt = utcNow;
                 }
             }
-
-            return result;
         }
     }
 }

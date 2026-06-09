@@ -1,6 +1,9 @@
 using DockerGameServer.Components;
+using DockerGameServer.Data;
 using DockerGameServer.Data.Interceptors;
+using DockerGameServer.Repositories;
 using DockerGameServer.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace DockerGameServer
 {
@@ -18,8 +21,21 @@ namespace DockerGameServer
             builder.Services.AddScoped<EncryptionInterceptor>();
             builder.Services.AddScoped<TimestampInterceptor>();
             builder.Services.AddScoped<EncryptionService>();
+            builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<UserService>();
 
-            var app = builder.Build();
+            builder.Services.AddHostedService<MigrationService>();
+
+			builder.Services.AddDbContext<AppDbContext>(
+                (serviceProvider, options) =>
+				{
+					var connectionString = builder.Configuration.GetConnectionString("PostgresDb");
+                    options.UseNpgsql(connectionString);
+                    options.AddInterceptors(serviceProvider.GetRequiredService<TimestampInterceptor>());
+                    options.AddInterceptors(serviceProvider.GetRequiredService<EncryptionInterceptor>());
+                });
+
+			var app = builder.Build();
 
             app.MapDefaultEndpoints();
 

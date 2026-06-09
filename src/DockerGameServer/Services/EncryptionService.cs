@@ -23,11 +23,11 @@ namespace DockerGameServer.Services
 
         public EncryptionService(IConfiguration configuration)
         {
-            var base64 = configuration["NTech:Security:MasterKey"];
+            var base64 = configuration["Security:MasterKey"];
             if (base64 == null)
                 throw new ArgumentNullException(nameof(base64));
 
-            var Pepper = configuration["NTech:Security:HashPepper"];
+            var Pepper = configuration["Security:HashPepper"];
             if (Pepper == null)
                 throw new ArgumentNullException(nameof(Pepper));
 

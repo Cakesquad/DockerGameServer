@@ -15,8 +15,8 @@ namespace DockerGameServer
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddSingleton<EncryptionInterceptor>();
-            builder.Services.AddSingleton<TimestampInterceptor>();
+            builder.Services.AddScoped<EncryptionInterceptor>();
+            builder.Services.AddScoped<TimestampInterceptor>();
             builder.Services.AddScoped<EncryptionService>();
 
             var app = builder.Build();

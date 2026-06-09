@@ -1,31 +1,41 @@
 ﻿@page "/register"
 
-<EditForm class="form" Model="model" OnValidSubmit="OnValidSubmit">
+<EditForm Model="model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
-    <p class="card-subtitle">Register </p>
-    <p class="message">Fill in the form to create an account.</p>
-        <label>
-        <input class="input" @bind-value="model.FullName" typeof="text" placeholder="" required="" />
-        <span>Fullname</span>
-        </label>
+    <div class="form">
+        <p class="card-subtitle">Register </p>
+        <p class="message">Fill in the form to create an account.</p>
+            <label>
+            <input class="input" @bind-value="model.FullName" typeof="text" placeholder="" />
+            <span>Fullname</span>
+            </label>
 
-        <label>
-            <input class="input" @bind-value="model.Email" type="email" placeholder="" required="" />
-            <span>Email</span>
-        </label>
+        <ValidationMessage For="@(() => model.FullName)" />
 
-        <label>
-            <input class="input" @bind-value="model.Password" type="password" placeholder="" required="" />
-            <span>Password</span>
-        </label>
+            <label>
+                <input class="input" @bind-value="model.Email" type="text" placeholder="" />
+                <span>Email</span>
+            </label>
 
-        <label>
-            <input class="input" @bind-value="model.ConfirmPassword" type="password" placeholder="" required="" />
-            <span>Confirm Password</span>
-        </label>
+        <ValidationMessage For="@(() => model.Email)" />
 
-        <button class="submit">Submit</button>
-        <p class="signin">Already have an account ? <a href="#">Signin</a> </p>
+            <label>
+                <input class="input" @bind-value="model.Password" type="password" placeholder="" />
+                <span>Password</span>
+            </label>
+
+        <ValidationMessage For="@(() => model.Password)" />
+
+            <label>
+                <input class="input" @bind-value="model.ConfirmPassword" type="password" placeholder="" />
+                <span>Confirm Password</span>
+            </label>
+        
+        <ValidationMessage For="@(() => model.ConfirmPassword)" />
+
+            <button class="submit">Submit</button>
+            <p class="signin">Already have an account ? <a href="#">Signin</a> </p>
+    </div>
 </EditForm>
 
 @code {

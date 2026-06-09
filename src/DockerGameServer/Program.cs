@@ -1,4 +1,6 @@
 using DockerGameServer.Components;
+using DockerGameServer.Data.Interceptors;
+using DockerGameServer.Services;
 
 namespace DockerGameServer
 {
@@ -12,6 +14,10 @@ namespace DockerGameServer
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            builder.Services.AddSingleton<EncryptionInterceptor>();
+            builder.Services.AddSingleton<TimestampInterceptor>();
+            builder.Services.AddScoped<EncryptionService>();
 
             var app = builder.Build();
 

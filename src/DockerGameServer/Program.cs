@@ -24,6 +24,9 @@ namespace DockerGameServer
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
 
+            builder.Services.AddSingleton<DockerService>();
+            builder.Services.AddSingleton<FileService>();
+
             builder.Services.AddHostedService<MigrationService>();
 
             builder.Services.AddDbContext<AppDbContext>(

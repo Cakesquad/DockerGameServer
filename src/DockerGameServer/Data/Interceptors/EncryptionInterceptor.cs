@@ -10,28 +10,40 @@ namespace DockerGameServer.Data.Interceptors
     public sealed class EncryptionInterceptor(EncryptionService encryptionService) : SaveChangesInterceptor, IMaterializationInterceptor
     {
         public override InterceptionResult<int> SavingChanges(
-        DbContextEventData eventData,
-        InterceptionResult<int> result)
+            DbContextEventData eventData,
+            InterceptionResult<int> result)
         {
-            var context = eventData.Context;
+            ApplyEncryption(eventData.Context);
+            return result;
+        }
+
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
+        {
+            ApplyEncryption(eventData.Context);
+            return ValueTask.FromResult(result);
+        }
+
+        public object InitializedInstance(
+            MaterializationInterceptionData data,
+            object entity)
+        {
+            DecryptIfEncryptedEntity(entity);
+            return entity;
+        }
+
+        private void ApplyEncryption(DbContext? context)
+        {
             if (context == null)
-                return result;
+                return;
 
             foreach (var entry in context.ChangeTracker.Entries())
             {
                 if (entry.State is EntityState.Added or EntityState.Modified)
                     EncryptIfEncryptedEntity(entry.Entity);
             }
-
-            return result;
-        }
-
-        public object InitializedInstance(
-        MaterializationInterceptionData data,
-        object entity)
-        {
-            DecryptIfEncryptedEntity(entity);
-            return entity;
         }
 
         private void EncryptIfEncryptedEntity(object entity)
@@ -83,7 +95,6 @@ namespace DockerGameServer.Data.Interceptors
             var json = encryptionService.Decrypt(encryptedValue, encryptedKey, valueNonce, keyNonce);
 
             var payloadType = baseType.GetGenericArguments()[0];
-
             var payload = JsonSerializer.Deserialize(json.Value, payloadType);
 
             baseType.GetProperty("Data")?.SetValue(entity, payload);

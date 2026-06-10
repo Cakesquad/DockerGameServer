@@ -1,0 +1,64 @@
+﻿@using DockerGameServer.Models
+@using DockerGameServer.Models.Database
+@using DockerGameServer.Models.Enums
+@inject GameServerService GameServerService
+@page "/test"
+
+<h3>TestPage</h3>
+
+<button class="btn btn-primary" @onclick="CreateTestServerAsync">Create server </button>
+<div class="row g-3">
+    @foreach (var server in gameServers)
+    {
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@server.ServerName</h5>
+                    <p class="card-text">Kind: @server.ServerKind</p>
+                    <button class="btn btn-danger" @onclick="() => RemoveTestServerAsync(server.Id)">Remove</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<GameServer> gameServers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGameServersAsync();
+    }
+
+    private async Task LoadGameServersAsync()
+    {
+        gameServers = await GameServerService.GetAllByOwnerAsync(Guid.Parse("019eb0f6-d4a3-7074-b4ed-82e9bf9987e3"));
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CreateTestServerAsync()
+    {
+        var model = new CreateGameServerModel<MinecraftServer>
+        {
+            ServerName = "Test Server",
+            ServerKind = GameServerKind.Minecraft,
+            ServerConfiguration = new MinecraftServer
+            {
+                Ports = new Dictionary<int, int> { { 25565, 25565 } }
+            }
+        };
+        var result = await GameServerService.CreateAsync(model);
+        Console.WriteLine($"Created server with ID: {result}");
+
+        await LoadGameServersAsync();
+    }
+
+    private async Task RemoveTestServerAsync(Guid serverId)
+    {
+        await GameServerService.RemoveAsync(serverId);
+
+        Console.WriteLine($"Removed server with ID: {serverId}");
+
+        await LoadGameServersAsync();
+    }
+}

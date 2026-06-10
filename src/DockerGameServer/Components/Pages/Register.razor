@@ -1,32 +1,42 @@
 ﻿@page "/register"
 
-<EditForm class="form" Model="model" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <p class="card-subtitle">Register </p>
-    <p class="message">Fill in the form to create an account.</p>
-        <label>
-        <input class="input" @bind-value="model.FullName" typeof="text" placeholder="" required="" />
-        <span>Fullname</span>
-        </label>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #242424;">
+    <div class="register-form">
+        <EditForm Model="model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
 
-        <label>
-            <input class="input" @bind-value="model.Email" type="email" placeholder="" required="" />
-            <span>Email</span>
-        </label>
+            <p class="register-title">Register</p>
+            <p class="register-message">Signup now and get full access to our app.</p>
 
-        <label>
-            <input class="input" @bind-value="model.Password" type="password" placeholder="" required="" />
-            <span>Password</span>
-        </label>
+            <div class="field-wrap">
+                <InputText class="field-input" placeholder=" " @bind-Value="model.FullName" />
+                <span>Fullname</span>
+                <ValidationMessage For="@(() => model.FullName)" />
+            </div>
 
-        <label>
-            <input class="input" @bind-value="model.ConfirmPassword" type="password" placeholder="" required="" />
-            <span>Confirm Password</span>
-        </label>
+            <div class="field-wrap">
+                <InputText class="field-input" placeholder=" " @bind-Value="model.Email" />
+                <span>Email</span>
+                <ValidationMessage For="@(() => model.Email)" />
+            </div>
 
-        <button class="submit">Submit</button>
-        <p class="signin">Already have an account ? <a href="#">Signin</a> </p>
-</EditForm>
+            <div class="field-wrap">
+                <InputText class="field-input" type="password" placeholder=" " @bind-Value="model.Password" />
+                <span>Password</span>
+                <ValidationMessage For="@(() => model.Password)" />
+            </div>
+
+            <div class="field-wrap">
+                <InputText class="field-input" type="password" placeholder=" " @bind-Value="model.ConfirmPassword" />
+                <span>Confirm password</span>
+                <ValidationMessage For="@(() => model.ConfirmPassword)" />
+            </div>
+
+            <button type="submit" class="register-submit w-100">Submit</button>
+            <p class="register-signin">Already have an account? <a href="#">Sign in</a></p>
+        </EditForm>
+    </div>
+</div>
 
 @code {
     [Inject] private UserService userService { get; set; } = default!;

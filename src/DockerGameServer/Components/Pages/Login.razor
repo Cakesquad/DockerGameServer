@@ -1,0 +1,49 @@
+﻿@page "/login"
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #242424;">
+    <div class="login-form">
+        <EditForm Model="model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+
+            <p class="login-title">Login</p>
+            <p class="login-message">Welcome back! Please sign in to continue.</p>
+
+            <div class="field-wrap">
+                <InputText class="field-input" placeholder=" " @bind-Value="model.Email" />
+                <span>Email</span>
+                <ValidationMessage For="@(() => model.Email)" />
+            </div>
+
+            <div class="field-wrap">
+                <InputText class="field-input" type="password" placeholder=" " @bind-Value="model.Password" />
+                <span>Password</span>
+                <ValidationMessage For="@(() => model.Password)" />
+            </div>
+
+            <button type="submit" class="login-submit w-100">Sign in</button>
+            <p class="login-signup">Don't have an account? <a href="/register">Register</a></p>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Inject] private IJSRuntime JsRuntime { get; set; } = default!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
+    private LoginModel model = new();
+
+    private async Task OnValidSubmit()
+    {
+        using var DotNetReference = DotNetObjectReference.Create(this);
+        var authModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
+
+        await authModule.InvokeVoidAsync("login", DotNetReference, model);
+    }
+
+    [JSInvokable]
+    public Task OnLoginSuccess()
+    {
+        NavigationManager.NavigateTo("/", forceLoad: true, replace: true);
+        return Task.CompletedTask;
+    }
+}

@@ -1,0 +1,116 @@
+﻿@page "/docker-test"
+
+<h3>DockerTest</h3>
+
+@if (Containers == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Status</th>
+                <th>Ports</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var container in Containers)
+            {
+                <tr>
+                    <td>@container.Name</td>
+                    <td>@container.Image</td>
+                    <td>@container.Status</td>
+                    <td>
+                        @foreach (var port in container.Ports)
+                        {
+                            <div>@port.Key: @port.Value</div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" @onclick="startTestContainer">Start Test Container</button>
+    <button class="btn btn-secondary" @onclick="ChangeTimeToDay">Set Time to Day</button>
+    <button class="btn btn-secondary" @onclick="ChangeTimeToNight">Set Time to Night</button>
+
+    @* <button class="btn btn-primary" @onclick="CreateTestDirectoryAsync">Create Test Directory</button>
+    <button class="btn btn-danger" @onclick="RemoveTestDirectoryAsync">Remove Test Directory</button> *@
+}
+
+@code {
+    [Inject] private DockerService DockerService { get; set; } = null!;
+    [Inject] private FileService FileService { get; set; } = null!;
+
+    private IReadOnlyList<DockerContainerInfo> Containers { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Containers = await DockerService.ListContainersAsync();
+    }
+
+    private async Task CreateTestDirectoryAsync()
+    {
+        FileService.CreateServerDirectory("test-server");
+    }
+
+    private async Task RemoveTestDirectoryAsync()
+    {
+        FileService.DeleteServerDirectory("test-server");
+    }
+
+    private async Task startTestContainer()
+    {
+        var serverDir = FileService.CreateServerDirectory("test-server");
+
+        var result = await DockerService.CreateAndStartContainerAsync(
+            image: "itzg/minecraft-server",
+            name: "mc-test-1",
+            env: new Dictionary<string, string>
+            {
+                ["EULA"] = "TRUE",
+                ["MEMORY"] = "4G",
+
+                ["TYPE"] = "FABRIC",
+                ["MODRINTH_PROJECTS"] = "fabric-api",
+            },
+            ports: new Dictionary<int, int>
+            {
+                [25565] = 25565
+            },
+            volumeBinds: new List<string>
+            {
+                $"{serverDir}:/data"
+            }
+        );
+    }
+
+    private async Task ChangeTimeToDay()
+    {
+        var containerId = await DockerService.GetContainerIdByNameAsync("mc-test-1");
+        if (containerId != null)
+        {
+            var output = await DockerService.ExecRconCommandAsync(
+                containerId,
+                $"time set day"
+            );
+        }
+    }
+
+    private async Task ChangeTimeToNight()
+    {
+        var containerId = await DockerService.GetContainerIdByNameAsync("mc-test-1");
+        if (containerId != null)
+        {
+            var output = await DockerService.ExecRconCommandAsync(
+                containerId,
+                $"time set night"
+            );
+        }
+    }
+}

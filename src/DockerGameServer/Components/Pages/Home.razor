@@ -5,3 +5,16 @@
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+
+<AuthorizeView>
+    <Authorized>
+        @foreach (var claim in context.User.Claims)
+        {
+            <p class="m-0">@claim.Type: @claim.Value</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in. Please <a href="/login">log in</a>.</p>
+    </NotAuthorized>
+</AuthorizeView>

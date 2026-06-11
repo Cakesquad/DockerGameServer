@@ -207,3 +207,13 @@
         border-color: rgba(0,191,255,0.3);
         background: rgba(0,191,255,0.08);
     }
+
+.topnav-dropdown-item button,
+button.topnav-dropdown-item {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+}

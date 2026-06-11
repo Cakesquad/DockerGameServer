@@ -7,7 +7,7 @@
     <div class="server-list-container">
         <div class="server-list-header">
             <p class="server-list-title">My Servers</p>
-            <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/create")'>
+            <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/new/minecraft")'>
                 + New Server
             </button>
         </div>
@@ -20,7 +20,7 @@
         {
             <div class="server-empty">
                 <p>You don't have any servers yet.</p>
-                <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/create")'>
+                <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/new/minecraft")'>
                     Create your first server
                 </button>
             </div>

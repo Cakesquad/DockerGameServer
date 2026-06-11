@@ -25,6 +25,11 @@
                                 <span>⚙️</span> Settings
                             </a>
                             <hr class="topnav-dropdown-divider" />
+                            <button class="topnav-dropdown-item" @onclick="OnThemeToggle" @onclick:stopPropagation="true">
+                                <span>@(IsDarkMode ? "☀️" : "🌙")</span>
+                                @(IsDarkMode ? "Light mode" : "Dark mode")
+                            </button>
+                            <hr class="topnav-dropdown-divider" />
                             <a href="/auth/Logout" class="topnav-dropdown-item danger">
                                 <span>🚪</span> Log out
                             </a>
@@ -41,6 +46,9 @@
 </nav>
 
 @code {
+    [Parameter] public EventCallback OnThemeToggle { get; set; }
+    [Parameter] public bool IsDarkMode { get; set; }
+
     private bool dropdownOpen = false;
 
     private void ToggleDropdown()

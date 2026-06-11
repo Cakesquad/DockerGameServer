@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JS
 
 <div class="layout-wrapper">
-    <NavMenu />
+    <NavMenu OnThemeToggle="ToggleTheme" IsDarkMode="isDarkMode" />
     <main class="main-content">
         @Body
     </main>
@@ -12,3 +13,31 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private bool isDarkMode = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var stored = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+            isDarkMode = stored != "light";
+            await ApplyTheme();
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        isDarkMode = !isDarkMode;
+        await ApplyTheme();
+    }
+
+    private async Task ApplyTheme()
+    {
+        var theme = isDarkMode ? "dark" : "light";
+        await JS.InvokeVoidAsync("localStorage.setItem", "theme", theme);
+        await JS.InvokeVoidAsync("document.body.setAttribute", "data-theme", theme);
+    }
+}

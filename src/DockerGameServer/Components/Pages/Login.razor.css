@@ -1,4 +1,4 @@
-﻿.register-form {
+﻿.login-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -11,7 +11,7 @@
     border: 1px solid #333;
 }
 
-.register-title {
+.login-title {
     font-size: 28px;
     font-weight: 600;
     letter-spacing: -1px;
@@ -23,8 +23,8 @@
     margin-bottom: 0;
 }
 
-    .register-title::before,
-    .register-title::after {
+    .login-title::before,
+    .login-title::after {
         position: absolute;
         content: "";
         height: 16px;
@@ -34,11 +34,11 @@
         background-color: #00bfff;
     }
 
-    .register-title::after {
+    .login-title::after {
         animation: pulse 1s linear infinite;
     }
 
-.register-message {
+.login-message {
     font-size: 14.5px;
     color: rgba(255,255,255,0.7);
     margin-bottom: 10px;
@@ -92,7 +92,7 @@
     display: block;
 }
 
-.register-submit {
+.login-submit {
     background-color: #00bfff;
     color: #fff;
     border: none;
@@ -103,23 +103,23 @@
     cursor: pointer;
 }
 
-    .register-submit:hover {
+    .login-submit:hover {
         background-color: rgba(0,191,255,0.6);
     }
 
-.register-signin {
+.login-signup {
     text-align: center;
     font-size: 14.5px;
     color: rgba(255,255,255,0.7);
     margin: 10px 0;
 }
 
-    .register-signin a {
+    .login-signup a {
         color: #00bfff;
         text-decoration: none;
     }
 
-        .register-signin a:hover {
+        .login-signup a:hover {
             text-decoration: underline;
         }
 

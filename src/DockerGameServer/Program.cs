@@ -3,6 +3,7 @@ using DockerGameServer.Data;
 using DockerGameServer.Data.Interceptors;
 using DockerGameServer.Repositories;
 using DockerGameServer.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace DockerGameServer
@@ -17,6 +18,7 @@ namespace DockerGameServer
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+            builder.Services.AddControllers();
 
             builder.Services.AddScoped<EncryptionService>();
             builder.Services.AddScoped<EncryptionInterceptor>();
@@ -24,7 +26,8 @@ namespace DockerGameServer
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<GameServerRepository>();
-			builder.Services.AddScoped<GameServerService>();
+			      builder.Services.AddScoped<GameServerService>();
+            builder.Services.AddScoped<UserContext>();
 
             builder.Services.AddSingleton<DockerService>();
             builder.Services.AddSingleton<FileService>();
@@ -40,6 +43,22 @@ namespace DockerGameServer
                         serviceProvider.GetRequiredService<TimestampInterceptor>(),
                         serviceProvider.GetRequiredService<EncryptionInterceptor>());
                 });
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.Name = "auth";
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SameSite = SameSiteMode.Strict;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    options.SlidingExpiration = true;
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/auth/logout";
+                });
+
+            builder.Services.AddAuthorization();
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
@@ -57,10 +76,13 @@ namespace DockerGameServer
             app.UseHttpsRedirection();
 
             app.UseAntiforgery();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
+            app.MapControllers();
 
             app.Run();
         }

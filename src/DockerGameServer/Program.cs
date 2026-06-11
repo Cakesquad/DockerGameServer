@@ -3,6 +3,7 @@ using DockerGameServer.Data;
 using DockerGameServer.Data.Interceptors;
 using DockerGameServer.Repositories;
 using DockerGameServer.Services;
+using DockerGameServer.Services.Games;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,8 @@ namespace DockerGameServer
 
             builder.Services.AddSingleton<DockerService>();
             builder.Services.AddSingleton<FileService>();
+
+            builder.Services.AddHttpClient<MinecraftVersionService>();
 
             builder.Services.AddHostedService<MigrationService>();
 

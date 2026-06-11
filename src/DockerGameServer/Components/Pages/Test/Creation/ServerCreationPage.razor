@@ -9,7 +9,8 @@
         {
             builder.OpenComponent(0, typeof(Minecraft));
             builder.CloseComponent();
-        },
+        }
+        ,
         _ => builder =>
         {
             builder.AddContent(0, $"Game '{Game}' not supported.");

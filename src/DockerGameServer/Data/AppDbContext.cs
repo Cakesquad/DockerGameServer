@@ -7,6 +7,7 @@ namespace DockerGameServer.Data
 	{
 		public DbSet<User> Users { get; set; }
 		public DbSet<GameServer> GameServers { get; set; }
+		public DbSet<ServerPort> ServerPorts { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -20,6 +21,15 @@ namespace DockerGameServer.Data
 			modelBuilder.Entity<GameServer>()
 				.Property(g => g.ServerConfiguration)
 				.HasColumnType("jsonb");
+
+			modelBuilder.Entity<ServerPort>()
+				.HasOne(s => s.GameServer)
+				.WithMany(gs => gs.ServerPorts)
+				.HasForeignKey(s => s.GameServerId);
+
+			modelBuilder.Entity<ServerPort>()
+				.HasIndex(s => s.ExternalPort)
+				.IsUnique();
 		}
 	}
 }

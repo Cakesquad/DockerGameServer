@@ -1,0 +1,243 @@
+﻿.home-hero {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 48px;
+    overflow: hidden;
+    border-bottom: 1px solid #2a2a2a;
+    background: radial-gradient(ellipse at 30% 50%, rgba(0,191,255,0.07) 0%, transparent 55%), radial-gradient(ellipse at 80% 60%, rgba(91,138,60,0.06) 0%, transparent 50%);
+}
+
+.home-dots-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+}
+
+.home-hero-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.home-hero-content {
+    max-width: 500px;
+}
+
+.home-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,191,255,0.08);
+    border: 1px solid rgba(0,191,255,0.2);
+    border-radius: 20px;
+    padding: 5px 16px;
+    color: #00bfff;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 28px;
+}
+
+.home-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00bfff;
+    flex-shrink: 0;
+}
+
+.home-title {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+    .home-title span {
+        color: #00bfff;
+    }
+
+.home-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+    margin-bottom: 36px;
+}
+
+.home-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.home-btn-primary {
+    background: #00bfff;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+    .home-btn-primary:hover {
+        background: rgba(0,191,255,0.75);
+        color: #fff;
+    }
+
+.home-btn-ghost {
+    background: transparent;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    transition: all 0.2s ease;
+}
+
+    .home-btn-ghost:hover {
+        border-color: rgba(255,255,255,0.4);
+        color: #fff;
+    }
+
+/* Hero visual side */
+.home-hero-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.home-grass-block {
+    width: 180px;
+    height: 180px;
+    filter: drop-shadow(0 20px 40px rgba(91,138,60,0.25));
+}
+
+/* Mini server card previews */
+.home-server-card-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 12px 16px;
+    width: 220px;
+}
+
+    .home-server-card-preview.offset {
+        margin-left: 32px;
+        opacity: 0.65;
+    }
+
+.hscp-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+    .hscp-dot.online {
+        background: #4caf50;
+        box-shadow: 0 0 6px rgba(76,175,80,0.6);
+    }
+
+    .hscp-dot.offline {
+        background: #555;
+    }
+
+.hscp-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.hscp-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.hscp-status {
+    font-size: 11px;
+    color: #4caf50;
+}
+
+    .hscp-status.offline {
+        color: rgba(255,255,255,0.3);
+    }
+
+.hscp-players {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+}
+
+    .hscp-players.dim {
+        color: rgba(255,255,255,0.2);
+    }
+
+/* Minecraft banner */
+.home-mc-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin: 48px auto;
+    max-width: 1000px;
+    padding: 28px 36px;
+    background: linear-gradient(135deg, #1a2a12 0%, #0d1a1a 100%);
+    border: 1px solid rgba(122,182,72,0.2);
+    border-radius: 18px;
+}
+
+.home-mc-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #7ab648;
+    margin-bottom: 8px;
+}
+
+.home-mc-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.home-mc-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0;
+}
+
+.home-mc-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.home-mc-pill {
+    background: rgba(122,182,72,0.1);
+    border: 1px solid rgba(122,182,72,0.25);
+    border-radius: 20px;
+    padding: 6px 16px;
+    color: #7ab648;
+    font-size: 13px;
+    font-weight: 500;
+}

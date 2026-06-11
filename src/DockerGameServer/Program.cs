@@ -25,8 +25,9 @@ namespace DockerGameServer
             builder.Services.AddScoped<TimestampInterceptor>();
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<ServerPortRepository>();
             builder.Services.AddScoped<GameServerRepository>();
-			      builder.Services.AddScoped<GameServerService>();
+            builder.Services.AddScoped<GameServerService>();
             builder.Services.AddScoped<UserContext>();
 
             builder.Services.AddSingleton<DockerService>();

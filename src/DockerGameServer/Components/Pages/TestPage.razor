@@ -1,5 +1,4 @@
 ﻿@using DockerGameServer.Models
-@using DockerGameServer.Models.Database
 @using DockerGameServer.Models.Enums
 @inject GameServerService GameServerService
 @page "/test"
@@ -15,6 +14,13 @@
                 <div class="card-body">
                     <h5 class="card-title">@server.ServerName</h5>
                     <p class="card-text">Kind: @server.ServerKind</p>
+                    <p class="card-text">State: @server.State</p>
+                    @if (server.State == "running"){
+                        <button class="btn btn-warning" @onclick="() => StopServerAsync(server.Id)">Stop</button>
+                    }
+                    else {
+                        <button class="btn btn-success" @onclick="() => StartServerAsync(server.Id)">Start</button>
+                    }
                     <button class="btn btn-danger" @onclick="() => RemoveTestServerAsync(server.Id)">Remove</button>
                 </div>
             </div>
@@ -23,7 +29,7 @@
 </div>
 
 @code {
-    private List<GameServer> gameServers = new();
+    private List<ListGameServer> gameServers = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,7 +50,11 @@
             ServerKind = GameServerKind.Minecraft,
             ServerConfiguration = new MinecraftServer
             {
-                Ports = new Dictionary<int, int> { { 25565, 25565 } }
+                // Ports = new Dictionary<int, int> { { 25565, 25565 } }
+            },
+            Ports = new List<Port>
+            {
+                new Port { InternalPort = 25565, ExternalPort = 25565 }
             }
         };
         var result = await GameServerService.CreateAsync(model);
@@ -59,6 +69,18 @@
 
         Console.WriteLine($"Removed server with ID: {serverId}");
 
+        await LoadGameServersAsync();
+    }
+
+    private async Task StopServerAsync(Guid serverId)
+    {
+        await GameServerService.StopRunningServerAsync(serverId);
+        await LoadGameServersAsync();
+    }
+
+    private async Task StartServerAsync(Guid serverId) 
+    {
+        await GameServerService.StartStoppedServerAsync(serverId);
         await LoadGameServersAsync();
     }
 }

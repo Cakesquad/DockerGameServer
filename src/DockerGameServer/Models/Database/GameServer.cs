@@ -12,5 +12,6 @@ namespace DockerGameServer.Models.Database
 
 		// Relations
 		public User Owner { get; set; }
+		public List<ServerPort> ServerPorts { get; set; }
 	}
 }

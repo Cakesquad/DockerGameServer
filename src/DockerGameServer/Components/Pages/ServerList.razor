@@ -1,0 +1,74 @@
+﻿@page "/servers"
+@inject GameServerService GameServerService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<div class="server-list-wrapper">
+    <div class="server-list-container">
+        <div class="server-list-header">
+            <p class="server-list-title">My Servers</p>
+            <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/create")'>
+                + New Server
+            </button>
+        </div>
+
+        @if (isLoading)
+        {
+            <p class="server-list-message">Loading servers...</p>
+        }
+        else if (servers.Count == 0)
+        {
+            <div class="server-empty">
+                <p>You don't have any servers yet.</p>
+                <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/create")'>
+                    Create your first server
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="server-grid">
+                @foreach (var server in servers)
+                {
+                    <div class="server-card">
+                        <div class="server-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="2" y="2" width="20" height="20" rx="4" fill="#2a2a2a" stroke="#444" stroke-width="1" />
+                                <rect x="5" y="5" width="6" height="6" fill="#5b8a3c" />
+                                <rect x="13" y="5" width="6" height="6" fill="#7ab648" />
+                                <rect x="5" y="13" width="6" height="6" fill="#7ab648" />
+                                <rect x="13" y="13" width="6" height="6" fill="#5b8a3c" />
+                            </svg>
+                        </div>
+                        <div class="server-card-info">
+                            <p class="server-card-name">@server.ServerName</p>
+                            <div class="server-card-meta">
+                                <span class="server-card-kind">Minecraft</span>
+                                <span class="server-card-status offline">● Offline</span>
+                            </div>
+                        </div>
+                        <div class="server-card-actions">
+                            <button class="btn-manage" @onclick="() => GoToServer(server.Id)">Manage</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private bool isLoading = false;
+
+    private List<(string ServerName, Guid Id)> servers = new()
+    {
+        ("Survival World", Guid.NewGuid()),
+        ("Creative Hub", Guid.NewGuid()),
+        ("Mini Games", Guid.NewGuid()),
+    };
+
+    private void GoToServer(Guid id)
+    {
+        NavigationManager.NavigateTo("/servers/" + id);
+    }
+}

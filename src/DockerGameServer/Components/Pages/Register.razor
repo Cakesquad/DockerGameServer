@@ -39,11 +39,14 @@
 </div>
 
 @code {
-    [Inject] private UserService userService { get; set; } = default!;
+    [Inject] private UserService UserService { get; set; } = default!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
     private RegisterModel model = new();
 
     private async Task OnValidSubmit()
     {
-        await userService.CreateAsync(model);
+        await UserService.CreateAsync(model);
+        NavigationManager.NavigateTo("/", forceLoad: true);
     }
 }

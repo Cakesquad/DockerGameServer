@@ -3,17 +3,27 @@
 	public class MinecraftServer
 	{
 		public int Memory { get; set; } = 4;
-		public MinecraftServerType ServerType { get; set; } = MinecraftServerType.Java;
+        public MinecraftServerType ServerType { get; set; } = MinecraftServerType.Vanilla;
 		public Dictionary<int, int> Ports { get; set; } = new Dictionary<int, int>();
-		public string? Version { get; set; }
-		public string JavaVersion { get; set; } = "25";
+        public string? Version { get; set; }
+        public JavaVersion JavaVersion { get; set; } = JavaVersion.java25;
 	}
 
 	public enum MinecraftServerType
 	{
-		Java,
-		Bedrock,
+		Vanilla,
 		Fabric,
 		NeoForge
 	}
+
+	public enum JavaVersion
+    {
+		latest,
+        java25,
+		java21,
+        java17,
+		java16,
+        java11,
+        java8
+    }
 }

@@ -18,7 +18,7 @@ namespace DockerGameServer.Services
 		public T ServerConfiguration { get; set; }
 	}
 
-	public class GameServerService(GameServerRepository gameServerRepository, FileService fileService, DockerService dockerService)
+	public class GameServerService(GameServerRepository gameServerRepository, FileService fileService, DockerService dockerService, UserContext userContext)
 	{
 		public async Task<string> CreateAsync<T>(CreateGameServerModel<T> model)
 		{
@@ -27,13 +27,11 @@ namespace DockerGameServer.Services
 
 			var gameServer = new GameServer
 			{
-				OwnerId = Guid.Parse("019eb0f6-d4a3-7074-b4ed-82e9bf9987e3"),
+				OwnerId = userContext.GetSignedInUser()?.Id ?? Guid.Empty,
 				ServerName = model.ServerName,
 				ServerKind = model.ServerKind,
 				ServerConfiguration = JsonSerializer.Serialize(model.ServerConfiguration)
 			};
-
-			await gameServerRepository.AddAsync(gameServer);
 
 			var serverDirectory = fileService.CreateServerDirectory(gameServer.Id.ToString());
 
@@ -45,9 +43,11 @@ namespace DockerGameServer.Services
 					break;
 				default:
 					throw new NotSupportedException($"Game server kind '{model.ServerKind}' is not supported.");
-			}
+            }
 
-			return gameServer.Id.ToString();
+            await gameServerRepository.AddAsync(gameServer);
+
+            return gameServer.Id.ToString();
 		}
 
 		public async Task<bool> RemoveAsync(Guid serverId)
@@ -91,11 +91,11 @@ namespace DockerGameServer.Services
 
 			switch (server.ServerType)
 			{
-				case MinecraftServerType.Java:
+				case MinecraftServerType.Vanilla:
 					break;
-				case MinecraftServerType.Bedrock:
-					env["TYPE"] = "BEDROCK";
-					break;
+				//case MinecraftServerType.Bedrock:
+				//	env["TYPE"] = "BEDROCK";
+				//	break;
 				case MinecraftServerType.Fabric:
 					env["TYPE"] = "FABRIC";
 					env["MODRINTH_PROJECTS"] = "fabric-api";

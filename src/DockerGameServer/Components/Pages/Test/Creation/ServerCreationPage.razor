@@ -1,0 +1,20 @@
+﻿@page "/servers/new/{Game}"
+
+@code {
+    [Parameter] public string Game { get; set; }
+
+    private RenderFragment RenderGameCreationForm() => Game.ToLower() switch
+    {
+        "minecraft" => builder =>
+        {
+            builder.OpenComponent(0, typeof(Minecraft));
+            builder.CloseComponent();
+        },
+        _ => builder =>
+        {
+            builder.AddContent(0, $"Game '{Game}' not supported.");
+        }
+    };
+}
+
+@RenderGameCreationForm()

@@ -1,0 +1,35 @@
+﻿@using DockerGameServer.Services.Games
+@inject MinecraftVersionService MinecraftVersionService
+
+@page "/test/minecraft"
+
+@if (_versions != null)
+{
+    @foreach (var version in _versions)
+    {
+        <div>
+            <h3>@version.Version (@version.Type)</h3>
+            <p>Supports Fabric: @version.SupportsFabric</p>
+            <p>Supports NeoForge: @version.SupportsNeoForge</p>
+        </div>
+    }
+}
+else
+{
+    <p>Loading versions...</p>
+}
+
+@code {
+    private IReadOnlyList<MinecraftCombinedVersion> _versions = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchVersions();
+    }
+
+    private async Task FetchVersions()
+    {
+        _versions = await MinecraftVersionService.GetCombinedVersionsAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}

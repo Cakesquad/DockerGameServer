@@ -1,7 +1,9 @@
 ﻿@using DockerGameServer.Models
 @using DockerGameServer.Models.Enums
 @inject GameServerService GameServerService
+@inject UserContext UserContext
 @page "/test"
+@attribute [Authorize]
 
 <h3>TestPage</h3>
 
@@ -38,7 +40,8 @@
 
     private async Task LoadGameServersAsync()
     {
-        gameServers = await GameServerService.GetAllByOwnerAsync(Guid.Parse("019eb0f6-d4a3-7074-b4ed-82e9bf9987e3"));
+        var userId = UserContext.GetSignedInUser()?.Id ?? Guid.Empty;
+        gameServers = await GameServerService.GetAllByOwnerAsync(userId);
         await InvokeAsync(StateHasChanged);
     }
 

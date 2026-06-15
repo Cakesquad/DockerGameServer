@@ -1,6 +1,7 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.Models;
 using DockerGameServer.Docker;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DockerGameServer.Services
@@ -103,16 +104,24 @@ namespace DockerGameServer.Services
 
             var envList = env.Select(kv => $"{kv.Key}={kv.Value}").ToList();
 
+            //var portBindings = ports.ToDictionary(
+            //    kv => $"{kv.Key}/tcp",
+            //    kv => (IList<PortBinding>)new List<PortBinding>
+            //    {
+            //        new PortBinding { HostPort = kv.Value.ToString() }
+            //    });
+
             var portBindings = ports.ToDictionary(
-                kv => $"{kv.Key}/tcp",
+                kv => $"{kv.Value}/tcp",
                 kv => (IList<PortBinding>)new List<PortBinding>
                 {
-            new PortBinding { HostPort = kv.Value.ToString() }
+                    new PortBinding { HostPort = kv.Key.ToString() }
                 });
 
             var createParams = new CreateContainerParameters
             {
-                Image = $"{image}:latest",
+                //Image = $"{image}:latest",
+                Image = $"{image}",
                 Name = name,
                 Env = envList,
                 HostConfig = new HostConfig
@@ -188,5 +197,44 @@ namespace DockerGameServer.Services
                 Force = force,
                 RemoveVolumes = true
             }, ct).ContinueWith(t => t.IsCompletedSuccessfully, ct);
+
+        public async Task<string> GetContainerLogsAsync(string containerId, CancellationToken ct = default)
+        {
+            var parameters = new ContainerLogsParameters
+            {
+                ShowStdout = true,
+                ShowStderr = true,
+                Follow = false,
+                Timestamps = false
+            };
+
+            using var stream = await _client.Containers.GetContainerLogsAsync(containerId, parameters, ct);
+            using var reader = new StreamReader(stream);
+
+            return await reader.ReadToEndAsync(ct);
+        }
+
+        public async IAsyncEnumerable<string> StreamContainerLogsAsync(
+            string containerId,
+            [EnumeratorCancellation] CancellationToken ct = default)
+        {
+            var parameters = new ContainerLogsParameters
+            {
+                ShowStdout = true,
+                ShowStderr = true,
+                Follow = true,
+                Timestamps = false
+            };
+
+            using var stream = await _client.Containers.GetContainerLogsAsync(containerId, parameters, ct);
+            using var reader = new StreamReader(stream);
+
+            while (!reader.EndOfStream && !ct.IsCancellationRequested)
+            {
+                var line = await reader.ReadLineAsync();
+                if (line is not null)
+                    yield return line;
+            }
+        }
     }
 }

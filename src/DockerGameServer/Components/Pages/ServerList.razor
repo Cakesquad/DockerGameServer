@@ -2,12 +2,14 @@
 @inject GameServerService GameServerService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
+@inject UserContext UserContext
+@implements IDisposable
 
 <div class="server-list-wrapper">
     <div class="server-list-container">
         <div class="server-list-header">
             <p class="server-list-title">My Servers</p>
-            <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/new/minecraft")'>
+            <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/new")'>
                 + New Server
             </button>
         </div>
@@ -16,11 +18,11 @@
         {
             <p class="server-list-message">Loading servers...</p>
         }
-        else if (servers.Count == 0)
+        else if (gameServers.Count == 0)
         {
             <div class="server-empty">
                 <p>You don't have any servers yet.</p>
-                <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/new/minecraft")'>
+                <button class="btn-new-server" @onclick='() => NavigationManager.NavigateTo("/servers/new")'>
                     Create your first server
                 </button>
             </div>
@@ -28,7 +30,7 @@
         else
         {
             <div class="server-grid">
-                @foreach (var server in servers)
+                @foreach (var server in gameServers)
                 {
                     <div class="server-card">
                         <div class="server-card-icon">
@@ -44,7 +46,11 @@
                             <p class="server-card-name">@server.ServerName</p>
                             <div class="server-card-meta">
                                 <span class="server-card-kind">Minecraft</span>
-                                <span class="server-card-status offline">● Offline</span>
+                                @{
+                                    var state = server.State == "running" ? "Online" : "Offline";
+                                    var stateClass = server.State == "running" ? "online" : "offline";
+                                    <span class="server-card-status @stateClass">● @state</span>
+                                }
                             </div>
                         </div>
                         <div class="server-card-actions">
@@ -58,7 +64,12 @@
 </div>
 
 @code {
-    private bool isLoading = false;
+    private PeriodicTimer? periodicTimer;
+    private CancellationTokenSource cts = new();
+
+    private bool isLoading = true;
+
+    private List<ListGameServer> gameServers = new();
 
     private List<(string ServerName, Guid Id)> servers = new()
     {
@@ -67,8 +78,47 @@
         ("Mini Games", Guid.NewGuid()),
     };
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGameServersAsync();
+        isLoading = false;
+
+        // Set the timer interval
+        periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+
+        // Start background task
+        _ = RunBackgroundWorkAsync();
+    }
+
+    private async Task LoadGameServersAsync()
+    {
+        var userId = UserContext.GetSignedInUser()?.Id ?? Guid.Empty;
+        gameServers = await GameServerService.GetAllByOwnerAsync(userId);
+        await InvokeAsync(StateHasChanged);
+    }
+
     private void GoToServer(Guid id)
     {
-        NavigationManager.NavigateTo("/servers/" + id);
+        NavigationManager.NavigateTo($"/server/{id}/console");
+    }
+
+    private async Task RunBackgroundWorkAsync()
+    {
+        try
+        {
+            while (await periodicTimer!.WaitForNextTickAsync(cts.Token))
+            {
+                await LoadGameServersAsync();
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (OperationCanceledException) {}
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+        periodicTimer?.Dispose();
     }
 }

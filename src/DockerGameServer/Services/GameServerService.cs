@@ -173,6 +173,7 @@ namespace DockerGameServer.Services
 			{
 				{ "EULA", "TRUE" },
 				{ "MEMORY", $"{server.Memory}G" },
+				{ "VERSION", server.Version ?? "latest" }
 			};
 
 			switch (server.ServerType)
@@ -193,8 +194,10 @@ namespace DockerGameServer.Services
 					throw new NotSupportedException($"Minecraft server type '{server.ServerType}' is not supported.");
 			}
 
-			var result = await dockerService.CreateAndStartContainerAsync(
-				image: "itzg/minecraft-server",
+			var tag = server.JavaVersion.ToString();
+
+            var result = await dockerService.CreateAndStartContainerAsync(
+				image: $"itzg/minecraft-server:{tag}",
 				name: $"gameserver-{serverId}",
 				env: env,
 				ports: ports.ToDictionary(p => p.ExternalPort, p => p.InternalPort),

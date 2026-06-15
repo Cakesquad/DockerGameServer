@@ -1,0 +1,90 @@
+﻿@inject DockerService DockerService
+@inject GameServerService GameServerService
+@inject UserContext UserContext
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+@page "/server/{ServerId}/console"
+
+
+<pre @ref="LogBox" class="mb-3" style="height:400px; overflow-y:auto; background:#111; color:#0f0; padding:10px;">
+@foreach (var line in LogLines)
+{
+    @line
+    <br />
+}
+</pre>
+
+
+<EditForm Model="this" OnSubmit="SendCommandAsync">
+    <div class="mb-3 mx-3">
+        <div class="d-flex gap-3">
+            <input type="text" @bind="Command" class="w-100" />
+            <button class="btn btn-primary">Send</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Inject] public DockerService Docker { get; set; } = default!;
+
+    [Parameter] public string ServerId { get; set; } = default!;
+
+    private string? ContainerId;
+    private string Command = string.Empty;
+
+    private List<string> LogLines = new();
+    private CancellationTokenSource? _cts;
+
+    private ElementReference LogBox;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Quick hack to get container ID from server ID
+            ContainerId = await DockerService.GetContainerIdByNameAsync($"gameserver-{ServerId}");
+            if (ContainerId == null)
+            {
+                LogLines.Add("Server not found.");
+                return;
+            }
+
+            _cts = new CancellationTokenSource();
+
+            // 1. Hent historik
+            var history = await Docker.GetContainerLogsAsync(ContainerId, _cts.Token);
+            LogLines = history.Split('\n').ToList();
+            await InvokeAsync(StateHasChanged);
+            await ScrollToBottom();
+
+            // 2. Start live streaming
+            _ = Task.Run(async () =>
+            {
+                await foreach (var line in Docker.StreamContainerLogsAsync(ContainerId, _cts.Token))
+                {
+                    LogLines.Add(line);
+                    await InvokeAsync(StateHasChanged);
+                    await ScrollToBottom();
+                }
+            });
+        }
+    }
+
+    private async Task ScrollToBottom()
+    {
+        await JSRuntime.InvokeVoidAsync("scrollToBottom", LogBox);
+    }
+
+    private async Task SendCommandAsync()
+    {
+        if (ContainerId == null || string.IsNullOrWhiteSpace(Command)) return;
+        await Docker.ExecRconCommandAsync(ContainerId, Command);
+        Command = string.Empty;
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+}

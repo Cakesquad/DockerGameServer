@@ -37,6 +37,11 @@ namespace DockerGameServer.Services
 
 	public class GameServerService(GameServerRepository gameServerRepository, ServerPortRepository serverPortRepository, FileService fileService, DockerService dockerService, UserContext userContext)
 	{
+		public async Task<bool> ExternalPortInUseAsync(int externalPort)
+		{
+			return await serverPortRepository.ExternalPortInUseAsync(externalPort);
+		}
+
 		public async Task<string> CreateAsync<T>(CreateGameServerModel<T> model)
 		{
 			if (model == null)
@@ -53,6 +58,12 @@ namespace DockerGameServer.Services
 
 			foreach (var port in model.Ports)
 			{
+				if (await serverPortRepository.ExternalPortInUseAsync(port.ExternalPort))
+				{
+					await gameServerRepository.DeleteAsync(gameServer);
+					throw new InvalidOperationException($"External port {port.ExternalPort} is already in use.");
+				}
+
 				var serverPort = new ServerPort
 				{
 					GameServerId = gameServer.Id,
@@ -67,10 +78,21 @@ namespace DockerGameServer.Services
 			switch (model.ServerKind)
 			{
 				case GameServerKind.Minecraft:
-					var minecraftConfig = JsonSerializer.Deserialize<MinecraftServer>(gameServer.ServerConfiguration);
-					await CreateMinecraftServer(minecraftConfig!, model.Ports, gameServer.Id.ToString());
+					try
+					{
+						var minecraftConfig = JsonSerializer.Deserialize<MinecraftServer>(gameServer.ServerConfiguration);
+						await CreateMinecraftServer(minecraftConfig!, model.Ports, gameServer.Id.ToString());
+					}
+					catch
+					{
+						await gameServerRepository.DeleteAsync(gameServer);
+						fileService.DeleteServerDirectory(serverDirectory);
+						throw;
+					}
 					break;
 				default:
+					await gameServerRepository.DeleteAsync(gameServer);
+					fileService.DeleteServerDirectory(serverDirectory);
 					throw new NotSupportedException($"Game server kind '{model.ServerKind}' is not supported.");
             }
 

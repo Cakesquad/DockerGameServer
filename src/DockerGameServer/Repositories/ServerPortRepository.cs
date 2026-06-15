@@ -7,6 +7,11 @@ namespace DockerGameServer.Repositories
 {
 	public class ServerPortRepository(AppDbContext dbContext)
 	{
+		public async Task<bool> ExternalPortInUseAsync(int port)
+		{
+			return await dbContext.ServerPorts.AnyAsync(sp => sp.ExternalPort == port);
+		}
+
 		public async Task<List<ServerPort>> GetByServerIdAsync(Guid serverId)
 		{
 			return await dbContext.ServerPorts.Where(sp => sp.GameServerId == serverId).ToListAsync();

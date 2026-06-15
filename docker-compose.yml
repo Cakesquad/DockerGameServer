@@ -10,6 +10,7 @@ services:
       - Servers__Path=/app/servers
       - Security__MasterKey=${SECURITY_MASTERKEY}
       - Security__HashPepper=${SECURITY_HASHPEPPER}
+      - ConnectionStrings__PostgresDb=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     ports:
       - "8080:8080"
     volumes:
@@ -18,4 +19,22 @@ services:
 
       # Host folder for server data (persistent, shared with Server containers)
       - /opt/gameservers:/app/servers
+    depends_on:
+      - postgres
     restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

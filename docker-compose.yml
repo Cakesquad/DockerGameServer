@@ -7,6 +7,15 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=production
       - ASPNETCORE_URLS=http://+:8080
+      - Servers__Path=/app/servers
+      - Security__MasterKey=${SECURITY_MASTERKEY}
+      - Security__HashPepper=${SECURITY_HASHPEPPER}
     ports:
       - "8080:8080"
+    volumes:
+      # Docker socket for Docker.DotNet
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      # Host folder for server data (persistent, shared with Server containers)
+      - /opt/gameservers:/app/servers
     restart: unless-stopped

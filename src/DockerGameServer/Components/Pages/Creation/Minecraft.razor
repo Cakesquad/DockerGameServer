@@ -1,0 +1,182 @@
+﻿@using DockerGameServer.Models
+@using DockerGameServer.Models.Enums
+@using DockerGameServer.Services.Games
+@inject GameServerService GameServerService
+@inject NavigationManager NavigationManager
+
+<div class="p-3">
+    <h3>Opret Minecraft Server</h3>
+
+    <div class="mb-3">
+        <label class="form-label">Server Name</label>
+        <InputText @bind-Value="SelectedName" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Version Type</label>
+        <InputSelect TValue="MinecraftVersionType" ValueExpression="() => SelectedVersionType" ValueChanged="OnVersionTypeChanged" class="form-select">
+            @foreach (var type in Enum.GetValues<MinecraftVersionType>())
+            {
+                <option value="@type">@type</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Minecraft Version</label>
+        <InputSelect TValue="string" ValueExpression="() => SelectedVersion" ValueChanged="OnVersionChanged" class="form-select">
+            @foreach (var v in FilteredVersions)
+            {
+                <option value="@v.Version">
+                    @v.Version
+                    @* (@v.Type)
+                    @(v.SupportsFabric ? " | Fabric" : "")
+                    @(v.SupportsNeoForge ? " | NeoForge" : "") *@
+                </option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Server Type</label>
+        <InputSelect @bind-Value="SelectedServerType" class="form-select">
+            @foreach (var type in ValidServerTypes)
+            {
+                <option value="@type">@type</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Java Version</label>
+        <InputSelect @bind-Value="SelectedJavaVersion" class="form-select">
+            @foreach (var j in Enum.GetValues<JavaVersion>())
+            {
+                <option value="@j">@j</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Memory</label>
+        <div style="display: flex; text-wrap: nowrap; gap: 1rem; align-items: center;">
+            <input type="range" class="form-control" min="1" max="16" value="@SelectedMemory" @oninput="OnMemoryChanged" />
+            <span style="width: 72px;">@SelectedMemory GB</span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Port</label>
+        <div>
+            <InputNumber @bind-Value="SelectedPort" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <button type="button" class="btn btn-primary" @onclick="CreateServer">Opret Server</button>
+    </div>
+</div>
+
+<p>@SelectedPort</p>
+
+@* <p>@SelectedVersionType</p>
+<p>@SelectedVersion</p>
+<p>@SelectedServerType</p>
+<p>@SelectedJavaVersion</p>
+<p>@SelectedMemory</p> *@
+
+@code {
+    // Inject version service
+    [Inject] public MinecraftVersionService VersionService { get; set; } = default!;
+
+    // State
+    private MinecraftVersionType SelectedVersionType = MinecraftVersionType.Release;
+    private string? SelectedVersion;
+    private MinecraftServerType SelectedServerType = MinecraftServerType.Vanilla;
+    private JavaVersion SelectedJavaVersion = JavaVersion.latest;
+    private int SelectedMemory = 4;
+    private int SelectedPort = 25565;
+    private string SelectedName = string.Empty;
+
+    private List<MinecraftCombinedVersion> AllVersions = new();
+    private List<MinecraftCombinedVersion> FilteredVersions = new();
+    private List<MinecraftServerType> ValidServerTypes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllVersions = (await VersionService.GetCombinedVersionsAsync()).ToList();
+        ApplyVersionFilter();
+    }
+
+    private void ApplyVersionFilter()
+    {
+        FilteredVersions = AllVersions
+            .Where(v => v.Type == SelectedVersionType)
+            .ToList();
+
+        // Reset selected version if it no longer matches
+        if (SelectedVersion is null || !FilteredVersions.Any(v => v.Version == SelectedVersion)){}
+        SelectedVersion = FilteredVersions.FirstOrDefault()?.Version;
+
+        OnVersionChanged(SelectedVersion!);
+    }
+
+    private void ResetServerDefaults()
+    {
+        SelectedServerType = MinecraftServerType.Vanilla;
+    }
+
+    private void OnMemoryChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int mem))
+        {
+            SelectedMemory = mem;
+        }
+    }
+
+    private void OnVersionTypeChanged(MinecraftVersionType newType)
+    {
+        SelectedVersionType = newType;
+        ApplyVersionFilter();
+        ResetServerDefaults();
+    }
+
+    private void OnVersionChanged(string newVersion)
+    {
+        SelectedVersion = newVersion;
+        ResetServerDefaults();
+        ValidServerTypes = AllVersions
+            .Where(v => v.Version == SelectedVersion)
+            .SelectMany(v =>
+            {
+                var types = new List<MinecraftServerType> { MinecraftServerType.Vanilla };
+                if (v.SupportsFabric) types.Add(MinecraftServerType.Fabric);
+                if (v.SupportsNeoForge) types.Add(MinecraftServerType.NeoForge);
+                return types;
+            })
+            .Distinct()
+            .ToList();
+    }
+
+    private async Task CreateServer()
+    {
+        var model = new CreateGameServerModel<MinecraftServer>
+        {
+            ServerName = SelectedName,
+            ServerKind = GameServerKind.Minecraft,
+            ServerConfiguration = new MinecraftServer
+            {
+                Version = SelectedVersion,
+                Memory = SelectedMemory,
+                ServerType = SelectedServerType,
+                JavaVersion = SelectedJavaVersion,
+            },
+            Ports = new List<Port>
+            {
+                new Port { InternalPort = 25565, ExternalPort = SelectedPort }
+            }
+        };
+        var result = await GameServerService.CreateAsync(model);
+        NavigationManager.NavigateTo("/servers");
+    }
+}

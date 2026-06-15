@@ -4,7 +4,6 @@
 	{
 		public int Memory { get; set; } = 4;
         public MinecraftServerType ServerType { get; set; } = MinecraftServerType.Vanilla;
-		public Dictionary<int, int> Ports { get; set; } = new Dictionary<int, int>();
         public string? Version { get; set; }
         public JavaVersion JavaVersion { get; set; } = JavaVersion.java25;
 	}

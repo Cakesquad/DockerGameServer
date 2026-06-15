@@ -85,11 +85,28 @@ namespace DockerGameServer.Services
 			var gameServer = await gameServerRepository.GetByIdAsync(serverId);
 			if (gameServer == null)
 				throw new InvalidOperationException("Game server not found.");
-			
-			var containerId = await dockerService.GetContainerIdByNameAsync($"gameserver-{serverId}");
-			if (!await dockerService.StopContainerAsync(containerId))
-				throw new InvalidOperationException("Failed to stop game server container.");
-			if (!await dockerService.RemoveContainerAsync(containerId, true))
+
+			var servers = await dockerService.ListContainersAsync();
+			DockerContainerInfo currentServer = null;
+			foreach ( var container in servers)
+			{
+				if (container.Name == $"/gameserver-{serverId}")
+				{
+					currentServer = container;
+					break;
+				}
+				continue;
+			}
+			if (currentServer == null)
+				throw new InvalidOperationException("Game server container not found.");
+
+			if (currentServer.State == "running")
+			{
+				if (!await dockerService.StopContainerAsync(currentServer.Id))
+					throw new InvalidOperationException("Failed to stop game server container.");
+			}
+
+			if (!await dockerService.RemoveContainerAsync(currentServer.Id, true))
 				throw new InvalidOperationException("Failed to remove game server container.");
 
 			fileService.DeleteServerDirectory(serverId.ToString());

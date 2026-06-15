@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: src/DockerGameServer/Dockerfile
+    user: root
     environment:
       - ASPNETCORE_ENVIRONMENT=production
       - ASPNETCORE_URLS=http://+:8080

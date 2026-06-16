@@ -7,7 +7,7 @@ services:
     user: root
     environment:
       - ASPNETCORE_ENVIRONMENT=production
-      - ASPNETCORE_URLS=http://+:${HTTP_PORT},https://+:${HTTPS_PORT}
+      - ASPNETCORE_URLS=https://+:${HTTPS_PORT};http://+:${HTTP_PORT}
       - Kestrel__Certificates__Default__Path=/https/cert.pfx
       - Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
       - Servers__Path=/app/servers

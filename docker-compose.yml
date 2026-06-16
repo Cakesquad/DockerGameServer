@@ -7,19 +7,25 @@ services:
     user: root
     environment:
       - ASPNETCORE_ENVIRONMENT=production
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_URLS=http://+:${HTTP_PORT},https://+:${HTTPS_PORT}
+      - Kestrel__Certificates__Default__Path=/https/cert.pfx
+      - Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
       - Servers__Path=/app/servers
       - Security__MasterKey=${SECURITY_MASTERKEY}
       - Security__HashPepper=${SECURITY_HASHPEPPER}
       - ConnectionStrings__PostgresDb=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     ports:
-      - "8080:8080"
+      - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${HTTPS_PORT}:${HTTPS_PORT}"
     volumes:
       # Docker socket for Docker.DotNet
       - /var/run/docker.sock:/var/run/docker.sock
 
       # Host folder for server data (persistent, shared with Server containers)
       - /opt/gameservers:/app/servers
+
+      # Certificate
+      - /opt/certs/cert.pfx:/https/cert.pfx:ro
     depends_on:
       - postgres
     restart: unless-stopped

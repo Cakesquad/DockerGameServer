@@ -1,0 +1,92 @@
+﻿/* PANEL */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.minecraft-panel {
+    background: #0f0f0f;
+    border: 2px solid #2d2d2d;
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 520px;
+    color: #e0e0e0;
+    font-family: "Minecraftia", monospace;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+    .minecraft-panel h3 {
+        color: #55ff55;
+        text-shadow: 2px 2px #003300;
+        margin-bottom: 10px;
+    }
+
+/* FIELD WRAPPER */
+.mc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* LABEL OVER FELTET */
+.mc-top-label {
+    color: #55ff55;
+    font-size: 0.9rem;
+    text-shadow: 1px 1px #003300;
+}
+
+/* INPUTS */
+.mc-input {
+    width: 100%;
+    background: #1c1c1c;
+    border: 2px solid #3a3a3a;
+    color: #e0e0e0;
+    padding: 12px;
+    border-radius: 6px;
+    outline: none;
+    font-family: "Minecraftia", monospace;
+    transition: 0.15s ease;
+}
+
+    .mc-input:focus {
+        border-color: #55ff55;
+        box-shadow: 0 0 6px #55ff55;
+    }
+
+/* RANGE */
+.mc-range {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+    .mc-range input[type="range"] {
+        accent-color: #55ff55;
+    }
+
+/* BUTTON */
+.mc-button {
+    background: #55ff55;
+    border: 2px solid #003300;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #003300;
+    font-weight: bold;
+    transition: 0.15s ease;
+    cursor: pointer;
+    font-family: "Minecraftia", monospace;
+}
+
+    .mc-button:hover {
+        background: #44cc44;
+        border-color: #002200;
+        box-shadow: 0 0 8px #55ff55;
+    }

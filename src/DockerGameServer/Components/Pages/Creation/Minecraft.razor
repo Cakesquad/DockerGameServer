@@ -4,17 +4,20 @@
 @inject GameServerService GameServerService
 @inject NavigationManager NavigationManager
 
-<div class="p-3">
+<div class="minecraft-panel">
     <h3>Opret Minecraft Server</h3>
 
-    <div class="mb-3">
-        <label class="form-label">Server Name</label>
-        <InputText @bind-Value="SelectedName" />
+    <div class="mc-field">
+        <label class="mc-top-label">Server Name</label>
+        <InputText @bind-Value="SelectedName" class="mc-input" />
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Version Type</label>
-        <InputSelect TValue="MinecraftVersionType" ValueExpression="() => SelectedVersionType" ValueChanged="OnVersionTypeChanged" class="form-select">
+    <div class="mc-field">
+        <label class="mc-top-label">Version Type</label>
+        <InputSelect TValue="MinecraftVersionType"
+                     ValueExpression="() => SelectedVersionType"
+                     ValueChanged="OnVersionTypeChanged"
+                     class="mc-input">
             @foreach (var type in Enum.GetValues<MinecraftVersionType>())
             {
                 <option value="@type">@type</option>
@@ -22,24 +25,22 @@
         </InputSelect>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Minecraft Version</label>
-        <InputSelect TValue="string" ValueExpression="() => SelectedVersion" ValueChanged="OnVersionChanged" class="form-select">
+    <div class="mc-field">
+        <label class="mc-top-label">Minecraft Version</label>
+        <InputSelect TValue="string"
+                     ValueExpression="() => SelectedVersion"
+                     ValueChanged="OnVersionChanged"
+                     class="mc-input">
             @foreach (var v in FilteredVersions)
             {
-                <option value="@v.Version">
-                    @v.Version
-                    @* (@v.Type)
-                    @(v.SupportsFabric ? " | Fabric" : "")
-                    @(v.SupportsNeoForge ? " | NeoForge" : "") *@
-                </option>
+                <option value="@v.Version">@v.Version</option>
             }
         </InputSelect>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Server Type</label>
-        <InputSelect @bind-Value="SelectedServerType" class="form-select">
+    <div class="mc-field">
+        <label class="mc-top-label">Server Type</label>
+        <InputSelect @bind-Value="SelectedServerType" class="mc-input">
             @foreach (var type in ValidServerTypes)
             {
                 <option value="@type">@type</option>
@@ -47,9 +48,9 @@
         </InputSelect>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Java Version</label>
-        <InputSelect @bind-Value="SelectedJavaVersion" class="form-select">
+    <div class="mc-field">
+        <label class="mc-top-label">Java Version</label>
+        <InputSelect @bind-Value="SelectedJavaVersion" class="mc-input">
             @foreach (var j in Enum.GetValues<JavaVersion>())
             {
                 <option value="@j">@j</option>
@@ -57,25 +58,22 @@
         </InputSelect>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Memory</label>
-        <div style="display: flex; text-wrap: nowrap; gap: 1rem; align-items: center;">
-            <input type="range" class="form-control" min="1" max="16" value="@SelectedMemory" @oninput="OnMemoryChanged" />
-            <span style="width: 72px;">@SelectedMemory GB</span>
+    <div class="mc-field">
+        <label class="mc-top-label">Memory</label>
+        <div class="mc-range">
+            <input type="range" min="1" max="16" value="@SelectedMemory" @oninput="OnMemoryChanged" />
+            <span>@SelectedMemory GB</span>
         </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Port</label>
-        <div>
-            <InputNumber @bind-Value="SelectedPort" />
-        </div>
+    <div class="mc-field">
+        <label class="mc-top-label">Port</label>
+        <InputNumber @bind-Value="SelectedPort" class="mc-input" />
     </div>
 
-    <div class="mb-3">
-        <button type="button" class="btn btn-primary" @onclick="CreateServer">Opret Server</button>
-    </div>
+    <button type="button" class="mc-button" @onclick="CreateServer">Opret Server</button>
 </div>
+
 
 <p>@SelectedPort</p>
 

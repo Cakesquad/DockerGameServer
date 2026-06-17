@@ -30,18 +30,37 @@
     }
 </div>
 
+<div class="@($"row g-3 m-3 {(portInUse ? "bg-danger" : "bg-success" )}")">
+    <div class="col">
+        <label for="externalPort" class="form-label">External port:</label>
+        <input type="number" class="form-control" id="externalPort" @bind="newServerPort" />
+    </div>
+    <button class="btn btn-primary" @onclick="CheckPortAsync">Check port</button>
+</div>
+
 @code {
     private List<ListGameServer> gameServers = new();
+    private int newServerPort = 25565;
+    private bool portInUse = false;
 
     protected override async Task OnInitializedAsync()
     {
+        await CheckPortAsync();
         await LoadGameServersAsync();
+    }
+
+    private async Task CheckPortAsync()
+    {
+        portInUse = await GameServerService.ExternalPortInUseAsync(newServerPort);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadGameServersAsync()
     {
         var userId = UserContext.GetSignedInUser()?.Id ?? Guid.Empty;
         gameServers = await GameServerService.GetAllByOwnerAsync(userId);
+
+        await CheckPortAsync();
         await InvokeAsync(StateHasChanged);
     }
 

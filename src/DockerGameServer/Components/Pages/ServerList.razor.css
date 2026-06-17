@@ -1,16 +1,32 @@
-﻿.server-list-wrapper {
+﻿/* WRAPPER */
+.server-list-wrapper {
     display: flex;
     justify-content: center;
     padding: 40px 20px;
     min-height: 100vh;
     background-color: #242424;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
 }
 
+/* Light mode background */
+body.light .server-list-wrapper {
+    background:
+        radial-gradient(ellipse at 30% 50%, rgba(0,191,255,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 60%, rgba(91,138,60,0.06) 0%, transparent 50%);
+    background-color: #020617;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+
+/* CONTAINER */
 .server-list-container {
     width: 100%;
     max-width: 800px;
 }
 
+/* HEADER */
 .server-list-header {
     display: flex;
     justify-content: space-between;
@@ -46,27 +62,25 @@
         animation: pulse 1s linear infinite;
     }
 
-.server-list-message {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 14.5px;
-}
-
+/* EMPTY + LOADING */
+.server-list-message,
 .server-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding: 60px 0;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 15px;
+    color: rgba(255,255,255,0.5);
 }
 
+body.light .server-list-message,
+body.light .server-empty {
+    color: rgba(0,0,0,0.55);
+}
+
+/* GRID */
 .server-grid {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
+/* SERVER CARD */
 .server-card {
     display: flex;
     align-items: center;
@@ -78,57 +92,53 @@
     transition: border-color 0.2s ease;
 }
 
-    .server-card:hover {
-        border-color: #00bfff;
-    }
+/* Light mode card */
+body.light .server-card {
+    background-color: #ffffff;
+    border-color: #d0d0d0;
+}
 
-.server-card-icon {
+/* ICON */
+.server-card-icon svg {
     width: 48px;
     height: 48px;
-    flex-shrink: 0;
+    border-radius: 10px;
 }
 
-    .server-card-icon svg {
-        width: 48px;
-        height: 48px;
-        border-radius: 10px;
-    }
-
-.server-card-info {
-    flex: 1;
-}
-
+/* TEXT */
 .server-card-name {
     font-size: 16px;
     font-weight: 600;
     color: #fff;
-    margin-bottom: 2px;
 }
 
-.server-card-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+body.light .server-card-name {
+    color: #000;
 }
 
 .server-card-kind {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255,255,255,0.45);
 }
 
-.server-card-status {
-    font-size: 12px;
-    font-weight: 500;
+body.light .server-card-kind {
+    color: rgba(0,0,0,0.55);
 }
 
-    .server-card-status.online {
-        color: #4caf50;
-    }
+/* STATUS */
+.server-card-status.online {
+    color: #4caf50;
+}
 
-    .server-card-status.offline {
-        color: rgba(255, 255, 255, 0.3);
-    }
+.server-card-status.offline {
+    color: rgba(255,255,255,0.3);
+}
 
+body.light .server-card-status.offline {
+    color: rgba(0,0,0,0.35);
+}
+
+/* BUTTONS */
 .btn-new-server {
     background-color: #00bfff;
     color: #fff;
@@ -142,7 +152,7 @@
 }
 
     .btn-new-server:hover {
-        background-color: rgba(0, 191, 255, 0.6);
+        background-color: rgba(0,191,255,0.6);
     }
 
 .btn-manage {
@@ -161,21 +171,7 @@
         color: #fff;
     }
 
-.server-list-wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
-    min-height: 100vh;
-    background-color: #242424;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
-}
-
-.server-list-container {
-    width: 100%;
-    max-width: 760px;
-}
-
+/* ANIMATION */
 @keyframes pulse {
     from {
         transform: scale(0.9);

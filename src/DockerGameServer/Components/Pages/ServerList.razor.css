@@ -1,22 +1,20 @@
-﻿/* WRAPPER */
+﻿/* WRAPPER — same background as Home */
 .server-list-wrapper {
     display: flex;
     justify-content: center;
     padding: 40px 20px;
     min-height: 100vh;
-    background-color: #242424;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background: radial-gradient(ellipse at 30% 50%, rgba(0,191,255,0.07) 0%, transparent 55%), radial-gradient(ellipse at 80% 60%, rgba(91,138,60,0.06) 0%, transparent 50%);
+    background-color: #020617;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
     background-size: 32px 32px;
 }
 
-/* Light mode background */
+/* Light mode uses same background */
 body.light .server-list-wrapper {
-    background:
-        radial-gradient(ellipse at 30% 50%, rgba(0,191,255,0.07) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 60%, rgba(91,138,60,0.06) 0%, transparent 50%);
+    background: radial-gradient(ellipse at 30% 50%, rgba(0,191,255,0.07) 0%, transparent 55%), radial-gradient(ellipse at 80% 60%, rgba(91,138,60,0.06) 0%, transparent 50%);
     background-color: #020617;
-    background-image:
-        radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
     background-size: 32px 32px;
 }
 
@@ -44,7 +42,6 @@ body.light .server-list-wrapper {
     padding-left: 30px;
     position: relative;
     margin-bottom: 0;
-    width: fit-content;
 }
 
     .server-list-title::before,
@@ -84,31 +81,45 @@ body.light .server-empty {
 .server-card {
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    gap: 20px;
     background-color: #1a1a1a;
     border: 1px solid #333;
     border-radius: 14px;
-    padding: 16px 20px;
+    padding: 8px 10px;
     transition: border-color 0.2s ease;
 }
 
-/* Light mode card */
 body.light .server-card {
     background-color: #ffffff;
     border-color: #d0d0d0;
 }
 
-/* ICON */
+/* ICON — bigger */
 .server-card-icon svg {
-    width: 48px;
-    height: 48px;
+    width: 60px;
+    height: 60px;
     border-radius: 10px;
 }
 
-/* TEXT */
+/* INFO SECTION */
+.server-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* NAME ROW WITH DOT */
+.server-card-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .server-card-name {
     font-size: 16px;
     font-weight: 600;
+    margin: 0;
     color: #fff;
 }
 
@@ -116,44 +127,47 @@ body.light .server-card-name {
     color: #000;
 }
 
+/* STATUS DOT */
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+    .status-dot.online {
+        background-color: #4caf50;
+        box-shadow: 0 0 6px rgba(76,175,80,0.6);
+    }
+
+    .status-dot.offline {
+        background-color: #d9534f;
+        opacity: 0.6;
+    }
+
+/* META (Minecraft) */
+.server-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    opacity: 0.85;
+}
+
 .server-card-kind {
-    font-size: 13px;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.80);
 }
 
 body.light .server-card-kind {
     color: rgba(0,0,0,0.55);
 }
 
-/* STATUS */
-.server-card-status.online {
-    color: #4caf50;
+/* MANAGE BUTTON */
+.server-card-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
 }
-
-.server-card-status.offline {
-    color: rgba(255,255,255,0.3);
-}
-
-body.light .server-card-status.offline {
-    color: rgba(0,0,0,0.35);
-}
-
-/* BUTTONS */
-.btn-new-server {
-    background-color: #00bfff;
-    color: #fff;
-    border: none;
-    border-radius: 18px;
-    padding: 9px 18px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-}
-
-    .btn-new-server:hover {
-        background-color: rgba(0,191,255,0.6);
-    }
 
 .btn-manage {
     background-color: transparent;
@@ -170,6 +184,23 @@ body.light .server-card-status.offline {
         background-color: #00bfff;
         color: #fff;
     }
+
+.btn-new-server {
+    background-color: #00bfff;
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+    .btn-new-server:hover {
+        background-color: rgba(0,191,255,0.6);
+    }
+
 
 /* ANIMATION */
 @keyframes pulse {

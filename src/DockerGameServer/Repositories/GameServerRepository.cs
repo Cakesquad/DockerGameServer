@@ -17,22 +17,22 @@ namespace DockerGameServer.Repositories
 
 		public async Task<List<GameServer>> GetAllAsync()
 		{
-			return await dbContext.GameServers.ToListAsync();
+			return await dbContext.GameServers.Include(gs => gs.ServerPorts).ToListAsync();
 		}
 
 		public async Task<List<GameServer>> GetByOwnerIdAsync(Guid ownerId)
 		{
-			return await dbContext.GameServers.Where(gs => gs.OwnerId == ownerId).ToListAsync();
+			return await dbContext.GameServers.Include(gs => gs.ServerPorts).Where(gs => gs.OwnerId == ownerId).ToListAsync();
 		}
 
 		public async Task<GameServer?> GetByIdAsync(Guid id)
 		{
-			return await dbContext.GameServers.FindAsync(id);
+			return await dbContext.GameServers.Include(gs => gs.ServerPorts).FirstOrDefaultAsync(gs => gs.Id == id);
 		}
 
 		public async Task<GameServer?> GetByServerNameAsync(string serverName)
 		{
-			return await dbContext.GameServers.FirstOrDefaultAsync(gs => gs.ServerName == serverName);
+			return await dbContext.GameServers.Include(gs => gs.ServerPorts).FirstOrDefaultAsync(gs => gs.ServerName == serverName);
 		}
 
 

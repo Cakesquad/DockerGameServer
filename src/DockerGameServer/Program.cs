@@ -21,9 +21,10 @@ namespace DockerGameServer
                 .AddInteractiveServerComponents();
             builder.Services.AddControllers();
 
-            builder.Services.AddScoped<EncryptionService>();
-            builder.Services.AddScoped<EncryptionInterceptor>();
-            builder.Services.AddScoped<TimestampInterceptor>();
+            builder.Services.AddSingleton<HostIpResolver>();
+            builder.Services.AddSingleton<EncryptionService>();
+            builder.Services.AddSingleton<EncryptionInterceptor>();
+            builder.Services.AddSingleton<TimestampInterceptor>();
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<ServerPortRepository>();

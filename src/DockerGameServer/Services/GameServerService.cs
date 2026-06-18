@@ -3,6 +3,7 @@ using DockerGameServer.Models.Database;
 using DockerGameServer.Models.Enums;
 using DockerGameServer.Repositories;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.PortableExecutable;
 using System.Text.Json;
 
 namespace DockerGameServer.Services
@@ -32,22 +33,31 @@ namespace DockerGameServer.Services
 		string ServerName,
 		GameServerKind ServerKind,
 		string ServerConfiguration,
-		string State
+		string State,
+		List<Port> Ports
+    );
+
+    public sealed record GameServerCreationContext(
+		Guid ServerId,
+		string ServerDirectory,
+		GameServer GameServer,
+		IReadOnlyList<ServerPort> Ports
 	);
 
-	public class GameServerService(GameServerRepository gameServerRepository, ServerPortRepository serverPortRepository, FileService fileService, DockerService dockerService, UserContext userContext)
+
+    public class GameServerService(GameServerRepository gameServerRepository, ServerPortRepository serverPortRepository, FileService fileService, DockerService dockerService, UserContext userContext)
 	{
 		public async Task<bool> ExternalPortInUseAsync(int externalPort)
 		{
 			return await serverPortRepository.ExternalPortInUseAsync(externalPort);
 		}
 
-		public async Task<string> CreateAsync<T>(CreateGameServerModel<T> model)
+		public async Task<string> CreateAsync<T>(CreateGameServerModel<T> model,
+			Func<GameServerCreationContext, Task>? beforeContainerCreate = null)
 		{
-			if (model == null)
-				throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
-			var gameServer = new GameServer
+            var gameServer = new GameServer
 			{
 				OwnerId = userContext.GetSignedInUser()?.Id ?? Guid.Empty,
 				ServerName = model.ServerName,
@@ -56,7 +66,8 @@ namespace DockerGameServer.Services
 			};
 			await gameServerRepository.AddAsync(gameServer);
 
-			foreach (var port in model.Ports)
+            var ports = new List<ServerPort>();
+            foreach (var port in model.Ports)
 			{
 				if (await serverPortRepository.ExternalPortInUseAsync(port.ExternalPort))
 				{
@@ -71,11 +82,23 @@ namespace DockerGameServer.Services
 					ExternalPort = port.ExternalPort
 				};
 				await serverPortRepository.AddAsync(serverPort);
-			}
+                ports.Add(serverPort);
+            }
 
 			var serverDirectory = fileService.CreateServerDirectory(gameServer.Id.ToString());
 
-			switch (model.ServerKind)
+            if (beforeContainerCreate is not null)
+            {
+                var ctx = new GameServerCreationContext(
+                    gameServer.Id,
+                    serverDirectory,
+                    gameServer,
+                    ports);
+
+                await beforeContainerCreate(ctx);
+            }
+
+            switch (model.ServerKind)
 			{
 				case GameServerKind.Minecraft:
 					try
@@ -172,13 +195,56 @@ namespace DockerGameServer.Services
 					ServerName: matching.ServerName,
 					ServerKind: matching.ServerKind,
 					ServerConfiguration: matching.ServerConfiguration,
-					State: server.State));
+					State: server.State,
+					Ports: matching.ServerPorts.Select(sp => new Port
+                    {
+                        InternalPort = sp.InternalPort,
+                        ExternalPort = sp.ExternalPort
+                    }).ToList()
+                ));
 			}
 
 			return result;
 		}
 
-		public async Task StopRunningServerAsync(Guid serverId)
+        public async Task<ListGameServer?> GetByIdAsync(Guid ownerId, Guid serverId)
+        {
+            if (ownerId == Guid.Empty)
+                throw new ArgumentException("OwnerId cannot be empty.", nameof(ownerId));
+            if (serverId == Guid.Empty)
+                throw new ArgumentException("ServerId cannot be empty.", nameof(serverId));
+
+            var gameServer = await gameServerRepository.GetByIdAsync(serverId);
+            if (gameServer == null || gameServer.OwnerId != ownerId)
+                return null;
+
+            var expectedName = $"gameserver-{serverId}";
+
+            var allServers = await dockerService.ListContainersAsync();
+            if (allServers == null)
+                return null;
+
+            var container = allServers
+                .FirstOrDefault(c => c.Name.TrimStart('/') == expectedName);
+
+            if (container == null)
+                return null;
+
+            return new ListGameServer(
+                Id: gameServer.Id,
+                ServerName: gameServer.ServerName,
+                ServerKind: gameServer.ServerKind,
+                ServerConfiguration: gameServer.ServerConfiguration,
+                State: container.State,
+                Ports: gameServer.ServerPorts.Select(sp => new Port
+                {
+                    InternalPort = sp.InternalPort,
+                    ExternalPort = sp.ExternalPort
+                }).ToList()
+            );
+        }
+
+        public async Task StopRunningServerAsync(Guid serverId)
 		{
 			if (serverId == Guid.Empty)
 				throw new ArgumentNullException("Server ID cannot be empty.", nameof(serverId));
@@ -236,7 +302,8 @@ namespace DockerGameServer.Services
 			var tag = server.JavaVersion.ToString();
 
             var result = await dockerService.CreateAndStartContainerAsync(
-				image: $"itzg/minecraft-server:{tag}",
+				image: $"itzg/minecraft-server",
+				tag: tag,
 				name: $"gameserver-{serverId}",
 				env: env,
 				ports: ports.ToDictionary(p => p.ExternalPort, p => p.InternalPort),

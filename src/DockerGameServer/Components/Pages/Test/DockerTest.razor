@@ -70,6 +70,7 @@ else
 
         var result = await DockerService.CreateAndStartContainerAsync(
             image: "itzg/minecraft-server",
+            tag: "latest",
             name: "mc-test-1",
             env: new Dictionary<string, string>
             {

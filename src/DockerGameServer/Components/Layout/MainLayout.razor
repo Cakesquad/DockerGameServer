@@ -2,10 +2,8 @@
 @inject IJSRuntime JS
 
 <script>
-    (function() {
-        const storedTheme = localStorage.getItem('theme') || 'light';
-        document.body.setAttribute('data-theme', storedTheme);
-    })();
+    const storedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', storedTheme);
 </script>
 
 <div class="layout-wrapper">

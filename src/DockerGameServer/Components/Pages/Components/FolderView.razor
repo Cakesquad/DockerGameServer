@@ -1,0 +1,80 @@
+﻿@inject FileManagementService FileManagementService
+
+@if (directoryContent != null)
+{
+    <div class="container py-4 mt-4 shadow-sm border rounded">
+
+        <!-- Header -->
+        <div class="row g-3 d-flex justify-content-between align-items-center mb-4">
+            <div class="col-auto">
+                <i class="bi bi-caret-left-fill cursor-pointer fs-2" @onclick="() => GetFolderViewAsync(directoryContent.RelativePath, true)"></i>
+            </div>
+            <div class="col px-0">
+                <h4 class="m-0">@directoryContent.RelativePath</h4>
+            </div>
+            <div class="col-auto d-flex justify-content-end">
+                <button class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>Upload
+                </button>
+            </div>
+        </div>
+
+        <!-- Folders -->
+        @if (directoryContent?.Folders != null)
+        {
+            <h6 class="">Folders</h6>
+            <div class="row g-3 mb-4">
+                @foreach (var folder in directoryContent.Folders)
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="card shadow-sm border-0 text-center h-100 object-card" @onclick="@(() => GetFolderViewAsync($"{directoryContent.RelativePath}/{folder.Name}"))">
+                            <i class="bi bi-folder-fill text-warning icon-object"></i>
+                            <div class="mt-2 fw-semibold text-white">@folder.Name</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Files -->
+        @if (directoryContent?.Files != null)
+        {
+            <h6 class="">Files</h6>
+            <div class="row g-3">
+                @foreach (var file in directoryContent.Files)
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="card shadow-sm border-0 text-center h-100 object-card">
+                            <i class="bi bi-file-earmark icon-object"></i>
+                            <div class="mt-2 text-white">@file.Name</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public Guid ServerId { get; set; } = Guid.Empty;
+
+    private DirectoryContent directoryContent = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFolderViewAsync(ServerId.ToString());
+    }
+
+    private async Task GetFolderViewAsync(string path, bool goToParent = false)
+    {
+        if (goToParent)
+            directoryContent = await FileManagementService.GetDirectoryContentAsync(ServerId, path, true);
+        else
+            directoryContent = await FileManagementService.GetDirectoryContentAsync(ServerId, path);
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

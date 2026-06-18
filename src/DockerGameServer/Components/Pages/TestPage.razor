@@ -1,7 +1,9 @@
-﻿@using DockerGameServer.Models
+﻿@using DockerGameServer.Components.Pages.Components
+@using DockerGameServer.Models
 @using DockerGameServer.Models.Enums
 @inject GameServerService GameServerService
 @inject UserContext UserContext
+@inject FileManagementService FileManagementService
 @page "/test"
 @attribute [Authorize]
 
@@ -24,6 +26,11 @@
                         <button class="btn btn-success" @onclick="() => StartServerAsync(server.Id)">Start</button>
                     }
                     <button class="btn btn-danger" @onclick="() => RemoveTestServerAsync(server.Id)">Remove</button>
+                    <button class="btn btn-info" @onclick="() => viewDir = !viewDir">Fetch directory contents</button>
+                    @if (viewDir)
+                    {
+                        <FolderView ServerId="@server.Id" />
+                    }
                 </div>
             </div>
         </div>
@@ -40,12 +47,13 @@
 
 @code {
     private List<ListGameServer> gameServers = new();
+
     private int newServerPort = 25565;
     private bool portInUse = false;
+    private bool viewDir = false;
 
     protected override async Task OnInitializedAsync()
     {
-        await CheckPortAsync();
         await LoadGameServersAsync();
     }
 

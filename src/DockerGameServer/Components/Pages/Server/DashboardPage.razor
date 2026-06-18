@@ -125,7 +125,7 @@ else if (gameServer != null)
         if (Guid.TryParse(ServerId, out var serverId))
         {
             gameServer = await GameServerService.GetByIdAsync(UserId, serverId);
-            HostIp = await HostIpResolver.GetHostIpAsync();
+            HostIp = await HostIpResolver.GetServerIpAsync();
         }
         Loading = false;
     }

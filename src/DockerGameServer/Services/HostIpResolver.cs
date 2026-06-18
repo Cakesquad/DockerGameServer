@@ -6,22 +6,22 @@ namespace DockerGameServer.Services
 {
     public class HostIpResolver
     {
-        public async Task<IPAddress?> GetHostIpAsync()
-        {
-            var dockerHost = await ResolveDockerHostAsync();
-            if (dockerHost is not null)
-                return dockerHost;
+        private readonly HttpClient _http;
 
-            return GetLocalMachineIp();
+        public HostIpResolver(HttpClient http)
+        {
+            _http = http;
         }
 
-        private async Task<IPAddress?> ResolveDockerHostAsync()
+        public async Task<IPAddress?> GetPublicIpAsync()
         {
             try
             {
-                var entry = await Dns.GetHostEntryAsync("host.docker.internal");
-                return entry.AddressList
-                    .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                var ipString = await _http.GetStringAsync("https://api.ipify.org");
+                if (IPAddress.TryParse(ipString, out var ip))
+                    return ip;
+
+                return null;
             }
             catch
             {
@@ -29,8 +29,19 @@ namespace DockerGameServer.Services
             }
         }
 
-        private IPAddress? GetLocalMachineIp()
+        public async Task<IPAddress?> GetHostIpAsync()
         {
+            try
+            {
+                var entry = await Dns.GetHostEntryAsync("host.docker.internal");
+                var dockerIp = entry.AddressList
+                    .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+
+                if (dockerIp != null)
+                    return dockerIp;
+            }
+            catch { }
+
             var interfaces = NetworkInterface.GetAllNetworkInterfaces();
 
             foreach (var ni in interfaces)
@@ -38,8 +49,7 @@ namespace DockerGameServer.Services
                 if (ni.OperationalStatus != OperationalStatus.Up)
                     continue;
 
-                var props = ni.GetIPProperties();
-                foreach (var addr in props.UnicastAddresses)
+                foreach (var addr in ni.GetIPProperties().UnicastAddresses)
                 {
                     if (addr.Address.AddressFamily == AddressFamily.InterNetwork &&
                         !IPAddress.IsLoopback(addr.Address))
@@ -50,6 +60,13 @@ namespace DockerGameServer.Services
             }
 
             return null;
+        }
+
+        public async Task<IPAddress?> GetServerIpAsync(bool useHostIp = false)
+        {
+            return useHostIp
+                ? await GetHostIpAsync()
+                : await GetPublicIpAsync();
         }
     }
 }

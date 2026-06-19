@@ -1,12 +1,19 @@
 ﻿/* PANEL */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     margin: 0;
 }
 
+/* Overrule global theme styles ONLY inside Minecraft panel */
+.minecraft-panel select,
+.minecraft-panel input,
+.minecraft-panel textarea {
+    all: unset;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* PANEL WRAPPER */
 .minecraft-panel {
     background: #0f0f0f;
     border: 2px solid #2d2d2d;
@@ -18,8 +25,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 22px;
-    margin: 0 auto;
-    margin-top: 40px;
+    margin: 60px auto;
 }
 
     .minecraft-panel h3 {
@@ -35,19 +41,19 @@ body {
     gap: 6px;
 }
 
-/* LABEL OVER FELTET */
+/* LABEL */
 .mc-top-label {
     color: #55ff55;
     font-size: 0.9rem;
     text-shadow: 1px 1px #003300;
 }
 
-/* INPUTS */
-.mc-input {
+/* INPUTS — restored Minecraft theme */
+.minecraft-panel .mc-input {
     width: 100%;
-    background: #1c1c1c;
-    border: 2px solid #3a3a3a;
-    color: #e0e0e0;
+    background: #1c1c1c !important;
+    border: 2px solid #3a3a3a !important;
+    color: #e0e0e0 !important;
     padding: 12px;
     border-radius: 6px;
     outline: none;
@@ -55,20 +61,75 @@ body {
     transition: 0.15s ease;
 }
 
-    .mc-input:focus {
-        border-color: #55ff55;
-        box-shadow: 0 0 6px #55ff55;
+    .minecraft-panel .mc-input:focus {
+        border-color: #55ff55 !important;
+        box-shadow: 0 0 6px #55ff55 !important;
     }
 
-/* RANGE */
+/* DROPDOWNS — Minecraft green arrow */
+.minecraft-panel select.mc-input {
+    appearance: none;
+    background: #1c1c1c url("data:image/svg+xml;utf8,<svg fill='%2355ff55' height='16' width='16' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center !important;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+/* RANGE WRAPPER */
 .mc-range {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-    .mc-range input[type="range"] {
-        accent-color: #55ff55;
+/* RANGE — full Minecraft styling */
+.minecraft-panel input[type="range"] {
+    all: unset;
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    background: #1c1c1c;
+    border: 2px solid #3a3a3a;
+    border-radius: 4px;
+    position: relative;
+}
+
+    /* TRACK */
+    .minecraft-panel input[type="range"]::-webkit-slider-runnable-track {
+        height: 6px;
+        background: #1c1c1c;
+        border-radius: 4px;
+    }
+
+    /* THUMB */
+    .minecraft-panel input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        background: #55ff55;
+        border: 2px solid #003300;
+        border-radius: 4px;
+        margin-top: -6px;
+        box-shadow: 0 0 6px #55ff55;
+        cursor: pointer;
+    }
+
+    /* FIREFOX */
+    .minecraft-panel input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        background: #55ff55;
+        border: 2px solid #003300;
+        border-radius: 4px;
+        box-shadow: 0 0 6px #55ff55;
+        cursor: pointer;
+    }
+
+    .minecraft-panel input[type="range"]::-moz-range-track {
+        height: 6px;
+        background: #1c1c1c;
+        border-radius: 4px;
     }
 
 /* BUTTON */

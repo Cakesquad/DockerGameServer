@@ -80,7 +80,6 @@ h1:focus {
 }
 
 body {
-    background-color: var(--bg);
     color: var(--text);
 }
 

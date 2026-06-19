@@ -21,9 +21,10 @@ namespace DockerGameServer
                 .AddInteractiveServerComponents();
             builder.Services.AddControllers();
 
-            builder.Services.AddScoped<EncryptionService>();
-            builder.Services.AddScoped<EncryptionInterceptor>();
-            builder.Services.AddScoped<TimestampInterceptor>();
+            builder.Services.AddSingleton<HostIpResolver>();
+            builder.Services.AddSingleton<EncryptionService>();
+            builder.Services.AddSingleton<EncryptionInterceptor>();
+            builder.Services.AddSingleton<TimestampInterceptor>();
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<ServerPortRepository>();
@@ -34,7 +35,12 @@ namespace DockerGameServer
             builder.Services.AddSingleton<DockerService>();
             builder.Services.AddSingleton<FileService>();
 
-            builder.Services.AddHttpClient<MinecraftVersionService>();
+            builder.Services.AddHttpClient<MinecraftVersionService>()
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                    new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    }); ;
 
             builder.Services.AddHostedService<MigrationService>();
 

@@ -1,0 +1,36 @@
+﻿@page "/server/{ServerId}/backup"
+@attribute [Authorize]
+
+@if (!Loading && gameServer == null)
+{
+    <NotFound />
+}
+else if (gameServer != null)
+{
+    <div class="container mt-4">
+        <ServerNavigation ServerId="@ServerId">
+            <div class="card-body">
+                <h2 class="text-nowrap mb-3">Server Backup</h2>
+            </div>
+        </ServerNavigation>
+    </div>
+}
+
+@code {
+    [Inject] public GameServerService GameServerService { get; set; } = default!;
+    [Inject] public UserContext UserContext { get; set; } = default!;
+
+    [Parameter] public string ServerId { get; set; } = default!;
+    private ListGameServer? gameServer { get; set; }
+    private bool Loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = UserContext.GetSignedInUser()!.Id;
+        if (Guid.TryParse(ServerId, out var serverId))
+        {
+            gameServer = await GameServerService.GetByIdAsync(userId, serverId);
+        }
+        Loading = false;
+    }
+}

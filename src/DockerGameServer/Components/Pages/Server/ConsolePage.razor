@@ -1,33 +1,46 @@
-﻿@inject DockerService DockerService
-@inject GameServerService GameServerService
-@inject UserContext UserContext
-@inject IJSRuntime JSRuntime
-@implements IDisposable
+﻿@implements IDisposable
 @page "/server/{ServerId}/console"
+@attribute [Authorize]
 
-
-<pre @ref="LogBox" class="mb-3" style="height:400px; overflow-y:auto; background:#111; color:#0f0; padding:10px;">
-@foreach (var line in LogLines)
+@if (!Loading && gameServer == null)
 {
-    @line
-    <br />
+    <NotFound />
 }
-</pre>
+else if (gameServer != null)
+{
+    <div class="container mt-4">
+        <ServerNavigation ServerId="@ServerId">
+            <div class="card-body">
+                <pre @ref="LogBox" class="border rounded mb-3" style="height:400px; overflow-y:auto; background:#111; color:#0f0; padding:10px;">
+                @foreach (var line in LogLines)
+                {
+                    @line
+                    <br />
+                }
+            </pre>
 
-
-<EditForm Model="this" OnSubmit="SendCommandAsync">
-    <div class="mb-3 mx-3">
-        <div class="d-flex gap-3">
-            <input type="text" @bind="Command" class="w-100" />
-            <button class="btn btn-primary">Send</button>
-        </div>
+                <EditForm Model="this" OnSubmit="SendCommandAsync">
+                    <div class="d-flex gap-3">
+                        <input type="text" @bind="Command" class="form-control w-100" />
+                        <button class="btn btn-primary">Send</button>
+                    </div>
+                </EditForm>
+            </div>
+        </ServerNavigation>
     </div>
-</EditForm>
+}
 
 @code {
-    [Inject] public DockerService Docker { get; set; } = default!;
+    [Inject] public DockerService DockerService { get; set; } = default!;
+    [Inject] public UserContext UserContext { get; set; } = default!;
+    [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] public GameServerService GameServerService { get; set; } = default!;
 
     [Parameter] public string ServerId { get; set; } = default!;
+
+    private ListGameServer? gameServer { get; set; }
+    private bool Loading = true;
+    private bool HasRendered = false;
 
     private string? ContainerId;
     private string Command = string.Empty;
@@ -37,10 +50,21 @@
 
     private ElementReference LogBox;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = UserContext.GetSignedInUser()!.Id;
+        if (Guid.TryParse(ServerId, out var serverId))
+        {
+            gameServer = await GameServerService.GetByIdAsync(userId, serverId);
+        }
+        Loading = false;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!HasRendered)
         {
+            HasRendered = true;
             // Quick hack to get container ID from server ID
             ContainerId = await DockerService.GetContainerIdByNameAsync($"gameserver-{ServerId}");
             if (ContainerId == null)
@@ -52,7 +76,7 @@
             _cts = new CancellationTokenSource();
 
             // 1. Hent historik
-            var history = await Docker.GetContainerLogsAsync(ContainerId, _cts.Token);
+            var history = await DockerService.GetContainerLogsAsync(ContainerId, _cts.Token);
             LogLines = history.Split('\n').ToList();
             await InvokeAsync(StateHasChanged);
             await ScrollToBottom();
@@ -60,7 +84,7 @@
             // 2. Start live streaming
             _ = Task.Run(async () =>
             {
-                await foreach (var line in Docker.StreamContainerLogsAsync(ContainerId, _cts.Token))
+                await foreach (var line in DockerService.StreamContainerLogsAsync(ContainerId, _cts.Token))
                 {
                     LogLines.Add(line);
                     await InvokeAsync(StateHasChanged);
@@ -78,7 +102,7 @@
     private async Task SendCommandAsync()
     {
         if (ContainerId == null || string.IsNullOrWhiteSpace(Command)) return;
-        await Docker.ExecRconCommandAsync(ContainerId, Command);
+        await DockerService.ExecRconCommandAsync(ContainerId, Command);
         Command = string.Empty;
     }
 

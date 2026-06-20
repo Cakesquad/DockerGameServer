@@ -1,0 +1,156 @@
+﻿/* ============================================
+   GLOBAL PAGE WRAPPER
+   ============================================ */
+.container.mt-4 {
+    font-family: "Minecraftia", monospace;
+    color: #e0e0e0;
+    margin: 40px auto;
+}
+
+/* ============================================
+   MAIN PANEL (samme stil som create-siden)
+   ============================================ */
+.main-card-body {
+    background: #0f0f0f;
+    border: 2px solid #2d2d2d;
+    border-radius: 0px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* ============================================
+   HEADERS
+   ============================================ */
+.container.mt-4 h2 {
+    color: #55ff55;
+    text-shadow: 2px 2px #003300;
+    font-size: 2rem;
+}
+
+.container.mt-4 h4,
+.container.mt-4 h5 {
+    color: #55ff55;
+    text-shadow: 1px 1px #003300;
+}
+
+/* ============================================
+   CARDS (Minecraft style)
+   ============================================ */
+.card {
+    background: #1a1a1a !important;
+    border: 2px solid #3a3a3a !important;
+    border-radius: 8px !important;
+    transition: 0.15s ease;
+}
+
+    .card:hover {
+        border-color: #55ff55 !important;
+        box-shadow: 0 0 8px #55ff55;
+    }
+
+.card-body {
+    background: transparent !important;
+    padding: 18px;
+}
+
+.card-title {
+    color: #55ff55 !important;
+    text-shadow: 1px 1px #003300;
+    margin-bottom: 10px;
+}
+
+.card-body p {
+    color: #d0d0d0;
+    font-size: 0.95rem;
+    margin: 0; 
+}
+
+/* ============================================
+   BUTTONS (Minecraft style)
+   ============================================ */
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-outline-secondary {
+    font-family: "Minecraftia", monospace;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 6px !important;
+}
+
+/* START BUTTON */
+.btn-success {
+    background: #55ff55 !important;
+    border: 2px solid #003300 !important;
+    color: #003300 !important;
+}
+
+    .btn-success:hover {
+        background: #44cc44 !important;
+        box-shadow: 0 0 8px #55ff55;
+    }
+
+/* STOP BUTTON */
+.btn-danger {
+    background: #cc3333 !important;
+    border: 2px solid #330000 !important;
+    color: #330000 !important;
+}
+
+    .btn-danger:hover {
+        background: #aa2222 !important;
+        box-shadow: 0 0 8px #ff4444;
+    }
+
+/* RESTART BUTTON */
+.btn-warning {
+    background: #ffaa00 !important;
+    border: 2px solid #663300 !important;
+    color: #663300 !important;
+}
+
+    .btn-warning:hover {
+        background: #dd9900 !important;
+        box-shadow: 0 0 8px #ffaa00;
+    }
+
+/* COPY BUTTON */
+.btn-outline-secondary {
+    border: 2px solid #3a3a3a !important;
+    color: #e0e0e0 !important;
+}
+
+    .btn-outline-secondary:hover {
+        border-color: #55ff55 !important;
+        color: #55ff55 !important;
+        box-shadow: 0 0 8px #55ff55;
+    }
+
+/* ============================================
+   PERFORMANCE CHARTS
+   ============================================ */
+canvas {
+    background: #000 !important;
+    border: 2px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+/* Glow effect for chart lines */
+.mc-chart-line {
+    filter: drop-shadow(0 0 6px #55ff55);
+}
+
+/* ============================================
+   SPACING FIXES
+   ============================================ */
+.row.g-3 > [class*="col"] {
+    margin-bottom: 0;
+}
+
+
+.row.g-3 > [class*="col"] .card {
+    height: 100%;
+}

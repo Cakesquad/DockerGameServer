@@ -68,17 +68,17 @@ namespace DockerGameServer.Services
 			return true;
 		}
 
-		public async Task<User> LoginAsync(LoginModel model)
+		public async Task<User?> LoginAsync(LoginModel model)
 		{
 			if (model == null)
 				throw new ArgumentNullException(nameof(model));
 
 			var user = await userRepository.GetByEmailHashAsync(encryptionService.CreateLookupHash(model.Email));
 			if (user == null)
-				throw new InvalidOperationException("Invalid email or password");
+				return null;
 
 			if (!BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
-				throw new InvalidOperationException("Invalid email or password");
+				return null;
 
 			return user;
 		}

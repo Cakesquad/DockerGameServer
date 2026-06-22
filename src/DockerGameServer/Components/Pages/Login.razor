@@ -20,6 +20,7 @@
                 <ValidationMessage For="@(() => model.Password)" />
             </div>
 
+            <p>@errorMessage</p>
             <button type="submit" class="login-submit w-100">Sign in</button>
             <p class="login-signup">Don't have an account? <a href="/register">Register</a></p>
         </EditForm>
@@ -31,6 +32,8 @@
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
     private LoginModel model = new();
+
+    private string errorMessage = string.Empty;
 
     private async Task OnValidSubmit()
     {
@@ -45,5 +48,11 @@
     {
         NavigationManager.NavigateTo("/", forceLoad: true, replace: true);
         return Task.CompletedTask;
+    }
+
+    [JSInvokable]
+    public async Task OnLoginFailed(string errorMessage)
+    {
+        this.errorMessage = errorMessage;
     }
 }

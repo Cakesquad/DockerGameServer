@@ -22,7 +22,7 @@
     }
 
         /* Hvert menupunkt skal ligne en Minecraft-knap */
-        .server-navlist .nav-link {
+        ::deep .server-navlist .nav-link {
             background: #1a1a1a;
             border: 2px solid #2d2d2d;
             border-radius: 6px;
@@ -36,7 +36,7 @@
         }
 
             /* Hover-effekt */
-            .server-navlist .nav-link:hover {
+            ::deep .server-navlist .nav-link:hover {
                 background: rgba(85,255,85,0.05);
                 border-color: #55ff55;
                 color: #55ff55;
@@ -44,7 +44,7 @@
             }
 
             /* Active-effekt */
-            .server-navlist .nav-link.active {
+            ::deep .server-navlist .nav-link.active {
                 background: rgba(85,255,85,0.12);
                 border-color: #55ff55;
                 color: #55ff55;

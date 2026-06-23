@@ -81,6 +81,7 @@
         if (firstRender)
         {
             jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/file.js");
+            await jsModule.InvokeVoidAsync("registerConnectionHandler", DotNetObjectReference.Create(this));
         }
     }
 

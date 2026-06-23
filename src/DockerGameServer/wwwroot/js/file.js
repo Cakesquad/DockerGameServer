@@ -37,3 +37,14 @@
         input.click();
     });
 }
+
+export function registerConnectionHandler(dotnetRef) {
+    Blazor.reconnectionHandler = {
+        onConnectionDown: () => {
+            dotnetRef.invokeMethodAsync("NotifyConnectionLost");
+        },
+        onConnectionUp: () => {
+            dotnetRef.invokeMethodAsync("NotifyConnectionRestored");
+        }
+    };
+}

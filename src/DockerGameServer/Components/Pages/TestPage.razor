@@ -57,6 +57,11 @@
         await LoadGameServersAsync();
     }
 
+    public async Task OnFileUploadAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
     private async Task CheckPortAsync()
     {
         portInUse = await GameServerService.ExternalPortInUseAsync(newServerPort);

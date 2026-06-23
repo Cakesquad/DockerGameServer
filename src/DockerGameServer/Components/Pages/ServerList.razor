@@ -32,6 +32,7 @@
             <div class="server-grid">
                 @foreach (var server in gameServers)
                 {
+                    var stateClass = server.State == "running" ? "online" : "offline";
                     <div class="server-card">
                         <div class="server-card-icon">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -43,14 +44,13 @@
                             </svg>
                         </div>
                         <div class="server-card-info">
-                            <p class="server-card-name">@server.ServerName</p>
+                            <div class="server-card-name-row">
+                                <span class="status-dot @stateClass"></span>
+                                <p class="server-card-name">@server.ServerName</p>
+                            </div>
+
                             <div class="server-card-meta">
                                 <span class="server-card-kind">Minecraft</span>
-                                @{
-                                    var state = server.State == "running" ? "Online" : "Offline";
-                                    var stateClass = server.State == "running" ? "online" : "offline";
-                                    <span class="server-card-status @stateClass">● @state</span>
-                                }
                             </div>
                         </div>
                         <div class="server-card-actions">
@@ -99,7 +99,7 @@
 
     private void GoToServer(Guid id)
     {
-        NavigationManager.NavigateTo($"/server/{id}/console");
+        NavigationManager.NavigateTo($"/server/{id}");
     }
 
     private async Task RunBackgroundWorkAsync()

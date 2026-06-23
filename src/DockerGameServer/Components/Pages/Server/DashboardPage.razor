@@ -1,0 +1,175 @@
+﻿@using System.Net
+@page "/server/{ServerId}"
+@attribute [Authorize]
+
+@if (!Loading && gameServer == null)
+{
+    <NotFound />
+}
+else if (gameServer != null)
+{
+
+    <div class="container mt-4">
+        <ServerNavigation ServerId="@ServerId">
+            <div class="card-body">
+                <!-- Header -->
+                <div class="row justify-content-end align-items-center g-3 mb-4">
+                    <div class="col">
+                        <h2 class="text-nowrap m-0">@gameServer.ServerName</h2>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            @if (gameServer.State == "running")
+                            {
+                                <button class="btn btn-warning" @onclick="RestartServer" disabled="@dockerActionRunning">Restart</button>
+                                <button class="btn btn-danger" @onclick="StopServer" disabled="@dockerActionRunning">Stop</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-success" @onclick="StartServer" disabled="@dockerActionRunning">Start</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-outline-secondary text-nowrap" @onclick="CopyToClipboard">
+                            <i class="bi bi-clipboard-fill"></i> Kopiér adresse
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Status</h5>
+                                <p>@ServerState</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Adresse</h5>
+                                <p>@ServerAddress</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Server Type</h5>
+                                <p>@gameServer.ServerKind</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Performance Graphs -->
+                <div class="mt-4">
+                    <h4>Performance</h4>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Memory Usage</h5>
+                                    <canvas id="memoryChart" style="width: 100%; height: 150px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">CPU Usage</h5>
+                                    <canvas id="cpuChart" style="width: 100%; height: 150px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div> <!-- END MAIN CONTENT -->
+        </ServerNavigation>
+    </div>
+}
+
+@code {
+    [Inject] public GameServerService GameServerService { get; set; } = default!;
+    [Inject] public UserContext UserContext { get; set; } = default!;
+    [Inject] public HostIpResolver HostIpResolver { get; set; } = default!;
+    [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
+
+    [Parameter] public string ServerId { get; set; } = default!;
+
+    private ListGameServer? gameServer { get; set; }
+    private bool Loading = true;
+    private IPAddress? HostIp;
+    private bool graphsRendered = false;
+    private bool dockerActionRunning = false;
+
+    private int? MainPort => gameServer?.Ports.FirstOrDefault(p => p.InternalPort == 25565)?.ExternalPort;
+    private string ServerAddress => HostIp != null && MainPort != null ? $"{HostIp}:{MainPort}" : "Loading...";
+    private Guid UserId => UserContext.GetSignedInUser()!.Id;
+    private string ServerState => gameServer!.State == "running" ? "Running" : "Stopped";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Guid.TryParse(ServerId, out var serverId))
+        {
+            gameServer = await GameServerService.GetByIdAsync(UserId, serverId);
+            HostIp = await HostIpResolver.GetHostIpAsync();
+        }
+        Loading = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (gameServer != null && !graphsRendered)
+        {
+            graphsRendered = true;
+
+            await JSRuntime.InvokeVoidAsync("drawSimpleLineChart", "memoryChart", new[] { 30, 40, 50, 45, 60 });
+            await JSRuntime.InvokeVoidAsync("drawSimpleLineChart", "cpuChart", new[] { 10, 20, 15, 30, 25 });
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", ServerAddress);
+    }
+
+    private async Task StopServer()
+    {
+        if (dockerActionRunning || gameServer!.State != "running") return;
+        dockerActionRunning = true;
+        await GameServerService.StopRunningServerAsync(gameServer!.Id);
+        gameServer = await GameServerService.GetByIdAsync(UserId, Guid.Parse(ServerId));
+        dockerActionRunning = false;
+    }
+
+    private async Task StartServer()
+    {
+        if (dockerActionRunning || gameServer!.State == "running") return;
+        dockerActionRunning = true;
+        await GameServerService.StartStoppedServerAsync(gameServer!.Id);
+        gameServer = await GameServerService.GetByIdAsync(UserId, Guid.Parse(ServerId));
+        dockerActionRunning = false;
+    }
+
+    private async Task RestartServer()
+    {
+        if (dockerActionRunning || gameServer!.State != "running") return;
+        dockerActionRunning = true;
+        // await GameServerService.RestartRunningServerAsync(gameServer!.Id);
+        // gameServer = await GameServerService.GetByIdAsync(UserId, Guid.Parse(ServerId));
+        dockerActionRunning = false;
+    }
+}

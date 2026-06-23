@@ -93,6 +93,7 @@ namespace DockerGameServer.Services
 
         public async Task<DockerCreateResult> CreateAndStartContainerAsync(
             string image,
+            string tag,
             string name,
             IReadOnlyDictionary<string, string> env,
             IReadOnlyDictionary<int, int> ports,
@@ -100,28 +101,28 @@ namespace DockerGameServer.Services
             CancellationToken ct = default)
         {
             // Ensure image exists
-            await PullImageAsync(image, "latest", ct);
+            await PullImageAsync(image, tag, ct);
 
             var envList = env.Select(kv => $"{kv.Key}={kv.Value}").ToList();
 
-            //var portBindings = ports.ToDictionary(
-            //    kv => $"{kv.Key}/tcp",
-            //    kv => (IList<PortBinding>)new List<PortBinding>
-            //    {
-            //        new PortBinding { HostPort = kv.Value.ToString() }
-            //    });
-
-            var portBindings = ports.ToDictionary(
-                kv => $"{kv.Value}/tcp",
-                kv => (IList<PortBinding>)new List<PortBinding>
+            var portBindings = ports
+                .SelectMany(kv => new[]
                 {
-                    new PortBinding { HostPort = kv.Key.ToString() }
-                });
+                    new KeyValuePair<string, IList<PortBinding>>(
+                        $"{kv.Value}/tcp",
+                        new List<PortBinding> { new PortBinding { HostPort = kv.Key.ToString() } }
+                    ),
+                    new KeyValuePair<string, IList<PortBinding>>(
+                        $"{kv.Value}/udp",
+                        new List<PortBinding> { new PortBinding { HostPort = kv.Key.ToString() } }
+                    )
+                })
+                .ToDictionary(k => k.Key, v => v.Value);
 
             var createParams = new CreateContainerParameters
             {
                 //Image = $"{image}:latest",
-                Image = $"{image}",
+                Image = $"{image}:{tag}",
                 Name = name,
                 Env = envList,
                 HostConfig = new HostConfig

@@ -1,12 +1,17 @@
 ﻿@page "/servers/new"
 @inject NavigationManager NavigationManager
 
-<div class="row g-3 m-3">
-    <div class="col-4 col-sm-3 col-md-2 col-xxl-1">
-        <div class="card overflow-hidden" style="cursor: pointer;" @onclick='() => NavigationManager.NavigateTo("/servers/new/minecraft")'>
-            <img src="images/games/minecraft_tile.jpg" style="height: 100%;" />
-        </div>
+<div class="game-select-container">
+    <div class="game-card game-minecraft" @onclick='() => NavigationManager.NavigateTo("/servers/new/minecraft")'>
+        <img src="images/games/minecraft_tile.jpg" class="game-card-img" />
     </div>
+
+
+    <!--
+    <div class="game-card game-cs2">
+        <img src="images/games/cs2_tile.jpg" class="game-card-img" />
+    </div>
+    -->
 </div>
 
 @code {

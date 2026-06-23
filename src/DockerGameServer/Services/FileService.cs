@@ -2,7 +2,7 @@
 {
     public class FileService(IConfiguration configuration)
     {
-        private readonly string _serversPath = configuration["Servers:path"] ?? throw new InvalidOperationException("Servers:path is not configured.");
+        private readonly string _serversPath = configuration["Servers:Path"] ?? throw new InvalidOperationException("Servers:Path is not configured.");
 
         public string CreateServerDirectory(string serverName)
         {

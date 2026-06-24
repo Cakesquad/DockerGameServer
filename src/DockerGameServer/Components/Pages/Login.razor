@@ -11,16 +11,16 @@
             <div class="field-wrap">
                 <InputText class="field-input" placeholder=" " @bind-Value="model.Email" />
                 <span>Email</span>
-                <ValidationMessage For="@(() => model.Email)" />
+                <ValidationMessage For="@(() => model.Email)" class="error-message" />
             </div>
 
             <div class="field-wrap">
                 <InputText class="field-input" type="password" placeholder=" " @bind-Value="model.Password" />
                 <span>Password</span>
-                <ValidationMessage For="@(() => model.Password)" />
+                <ValidationMessage For="@(() => model.Password)" class="error-message"/>
             </div>
 
-            <p>@errorMessage</p>
+            <p class="error-message">@errorMessage</p>
             <button type="submit" class="login-submit w-100">Sign in</button>
             <p class="login-signup">Don't have an account? <a href="/register">Register</a></p>
         </EditForm>

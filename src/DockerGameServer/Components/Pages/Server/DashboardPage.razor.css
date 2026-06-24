@@ -154,3 +154,29 @@ canvas {
 .row.g-3 > [class*="col"] .card {
     height: 100%;
 }
+
+
+/* ============================================
+   COPY BUTTON (Minecraft style)
+   ============================================ */
+.btn-copy {
+    background: #1a1a1a !important;
+    border: 2px solid #3a3a3a !important;
+    color: #e0e0e0 !important;
+    font-family: "Minecraftia", monospace;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 6px !important;
+    transition: 0.15s ease;
+}
+
+    .btn-copy:hover {
+        border-color: #55ff55 !important;
+        color: #55ff55 !important;
+        box-shadow: 0 0 8px #55ff55;
+    }
+
+    .btn-copy i {
+        color: #55ff55 !important;
+    }
+

@@ -3,7 +3,6 @@
         padding: 0 5px;
     }
 
-    /* Sidebar skal være et panel */
     .server-nav {
         padding: 20px 16px;
         display: flex;
@@ -11,7 +10,6 @@
         gap: 14px;
     }
 
-    /* Navigationen skal være en ren liste */
     .server-navlist {
         display: flex;
         flex-direction: column;
@@ -21,21 +19,19 @@
         list-style: none;
     }
 
-        /* Hvert menupunkt skal ligne en Minecraft-knap */
         ::deep .server-navlist .nav-link {
             background: #1a1a1a;
             border: 2px solid #2d2d2d;
             border-radius: 6px;
-            padding: 12px 16px;
+            padding: 10px 10px;
             font-family: "Minecraftia", monospace;
-            font-size: 0.95rem;
+            font-size: 0.80rem;
             color: #e0e0e0;
             display: block;
             width: 100%;
             transition: 0.15s ease;
         }
 
-            /* Hover-effekt */
             ::deep .server-navlist .nav-link:hover {
                 background: rgba(85,255,85,0.05);
                 border-color: #55ff55;
@@ -43,24 +39,11 @@
                 box-shadow: 0 0 6px #55ff55;
             }
 
-            /* Active-effekt */
             ::deep .server-navlist .nav-link.active {
                 background: rgba(85,255,85,0.12);
                 border-color: #55ff55;
                 color: #55ff55;
                 box-shadow: 0 0 6px #55ff55;
-            }
-
-        .server-navlist .nav-item {
-            border-bottom: 1px solid #2d2d2d;
-            padding-bottom: 6px;
-            margin-bottom: 0;
-        }
-
-            .server-navlist .nav-item:last-child {
-                border-bottom: none;
-                margin-bottom: 0;
-                padding-bottom: 0;
             }
 }
 
@@ -131,9 +114,9 @@
 
 
 /* ============================================
-   SIDEBAR BAGGRUND (Minecraft)
+   SIDEBAR BACKGROUND
    ============================================ */
-.server-nav {
+::deep .server-nav {
     background: radial-gradient(ellipse at 30% 50%, rgba(0,191,255,0.07) 0%, transparent 55%), radial-gradient(ellipse at 80% 60%, rgba(91,138,60,0.06) 0%, transparent 50%);
     background-color: #0f0f0f !important;
     background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
@@ -142,9 +125,9 @@
 }
 
 /* ============================================
-   FÆLLES NAVIGATION VARIABLER (desktop + mobil)
+   NAV COLORS
    ============================================ */
-.server-navlist {
+::deep .server-navlist {
     --bs-nav-link-color: #e0e0e0;
     --bs-nav-link-hover-color: #55ff55;
     --bs-nav-tabs-link-active-color: #55ff55;
@@ -156,31 +139,6 @@
     --bs-body-bg: #0f0f0f;
 }
 
-    /* ============================================
-   NAV LINK STYLING
-   ============================================ */
-    .server-navlist .nav-link {
-        font-family: "Minecraftia", monospace;
-        border-radius: 6px;
-        transition: 0.15s ease;
-    }
-
-        /* HOVER */
-        .server-navlist .nav-link:hover {
-            background: rgba(85,255,85,0.05) !important;
-            box-shadow: 0 0 6px #55ff55;
-        }
-
-        /* ACTIVE */
-        .server-navlist .nav-link.active {
-            background: rgba(85,255,85,0.12) !important;
-            box-shadow: 0 0 6px #55ff55;
-        }
-
-        /* IKONER */
-        .server-navlist .nav-link i {
-            color: #55ff55 !important;
-        }
 .col-md-9 {
     padding: 0;
     margin: 0;

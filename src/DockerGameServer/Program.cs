@@ -34,13 +34,9 @@ namespace DockerGameServer
 
             builder.Services.AddSingleton<DockerService>();
             builder.Services.AddSingleton<FileService>();
+            builder.Services.AddScoped<FileManagementService>();
 
-            builder.Services.AddHttpClient<MinecraftVersionService>()
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                    new HttpClientHandler
-                    {
-                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                    }); ;
+			builder.Services.AddHttpClient<MinecraftVersionService>();
 
             builder.Services.AddHostedService<MigrationService>();
 

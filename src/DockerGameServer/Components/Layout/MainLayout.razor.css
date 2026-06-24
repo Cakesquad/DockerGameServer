@@ -2,8 +2,11 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: var(--bg);
+    background: radial-gradient(circle at 20% 20%, rgba(0,191,255,0.10), transparent 60%), radial-gradient(circle at 80% 30%, rgba(0,191,255,0.06), transparent 70%), radial-gradient(ellipse at 30% 50%, rgba(0,191,255,0.07) 0%, transparent 55%), radial-gradient(ellipse at 80% 60%, rgba(91,138,60,0.06) 0%, transparent 50%), #020617;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
 }
+
 
 .main-content {
     flex: 1;

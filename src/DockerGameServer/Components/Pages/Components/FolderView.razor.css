@@ -1,0 +1,35 @@
+.icon-object {
+    font-size: 2.5rem;
+}
+
+.object-card {
+    background-color: darkgrey;
+}
+
+.object-card:hover {
+    background-color: gray;
+    transform: translateY(-2px);
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.btn-icon {
+    --icon-color: var(--bs-secondary-text-emphasis);
+    --icon-hover-color: var(--bs-emphasis-color);
+    color: var(--icon-color);
+    padding: 0;
+    border: none;
+    background-color: transparent !important;
+}
+
+    .btn-icon:hover {
+        color: var(--icon-hover-color);
+    }
+
+    .btn-icon::after {
+        display: none !important;
+    }

@@ -10,7 +10,7 @@ else if (gameServer != null)
 {
     <div class="container mt-4">
         <ServerNavigation ServerId="@ServerId">
-            <div class="card-body">
+            <div class="console-wrapper">
                 <pre @ref="LogBox" class="border rounded mb-3" style="height:400px; overflow-y:auto; background:#111; color:#0f0; padding:10px;">
                 @foreach (var line in LogLines)
                 {
@@ -21,8 +21,8 @@ else if (gameServer != null)
 
                 <EditForm Model="this" OnSubmit="SendCommandAsync">
                     <div class="d-flex gap-3">
-                        <input type="text" @bind="Command" class="form-control w-100" />
-                        <button class="btn btn-primary">Send</button>
+                        <input type="text" @bind="Command" class="form-control console-input" />
+                        <button class="btn console-send-btn">Send</button>
                     </div>
                 </EditForm>
             </div>

@@ -9,9 +9,46 @@ else if (gameServer != null)
 {
     <div class="container mt-4">
         <ServerNavigation ServerId="@ServerId">
-            <div class="card-body">
+
+            <div class="config-wrapper">
+
                 <h2 class="text-nowrap mb-3">Server Configuration</h2>
+
+                <!-- GENERAL SETTINGS -->
+                <div class="config-section">
+                    <h3>General Settings</h3>
+
+                    <div class="mb-3">
+                        <label class="form-label">Server Name</label>
+                        <input type="text" class="form-control config-input" value="@gameServer.ServerName" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Max Players</label>
+                        <input type="number" class="form-control config-input" />
+                    </div>
+                </div>
+
+                <!-- PERFORMANCE SETTINGS -->
+                <div class="config-section">
+                    <h3>Performance</h3>
+
+                    <div class="mb-3">
+                        <label class="form-label">Memory (MB)</label>
+                        <input type="number" class="form-control config-input" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">CPU Limit (%)</label>
+                        <input type="number" class="form-control config-input" />
+                    </div>
+                </div>
+
+                <!-- SAVE BUTTON -->
+                <button class="btn config-save-btn">Save Changes</button>
+
             </div>
+
         </ServerNavigation>
     </div>
 }

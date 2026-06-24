@@ -10,7 +10,10 @@
     padding: 40px 0px;
     overflow: hidden;
     border-bottom: 1px solid #2a2a2a;
-    background: transparent;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(0,191,255,0.10), transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(0,191,255,0.06), transparent 70%),
+        transparent;
 }
 
 
@@ -115,53 +118,79 @@
 
 /* Primary call-to-action button */
 .home-btn-primary {
-    background: #00bfff;
-    color: #fff;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 12px 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
     border-radius: 10px;
-    transition: background-color 0.2s ease;
+    background: linear-gradient(135deg, #00bfff, #0099cc);
+    border: 1px solid rgba(0,191,255,0.45);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 0 12px rgba(0,191,255,0.35), inset 0 0 6px rgba(255,255,255,0.15);
+    transition: all 0.2s ease;
 }
 
     .home-btn-primary:hover {
-        background: rgba(0,191,255,0.75);
+        background: linear-gradient(135deg, #33ccff, #00aadd);
+        border-color: rgba(0,191,255,0.65);
+        box-shadow: 0 0 18px rgba(0,191,255,0.55), inset 0 0 8px rgba(255,255,255,0.25);
+        transform: translateY(-1px);
     }
 
-/* Secondary ghost-style button */
+    .home-btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 0 10px rgba(0,191,255,0.35), inset 0 0 4px rgba(255,255,255,0.15);
+    }
+
+/* SIGN IN KNAP PÅ HOME PAGE */
 .home-btn-ghost {
-    background: transparent;
-    color: rgba(255,255,255,0.65);
-    text-decoration: none;
-    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 12px 28px;
     border-radius: 10px;
-    border: 1px solid #444;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(0,191,255,0.35);
+
+    color: rgba(255,255,255,0.9);
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(0,191,255,0.2);
     transition: all 0.2s ease;
 }
 
     .home-btn-ghost:hover {
-        border-color: rgba(255,255,255,0.4);
-        color: #fff;
+        background: rgba(0,191,255,0.15);
+        border-color: rgba(0,191,255,0.55);
+        color: #00bfff;
+        box-shadow: 0 0 16px rgba(0,191,255,0.35);
+        transform: translateY(-1px);
     }
+
+    .home-btn-ghost:active {
+        transform: translateY(0);
+        box-shadow: 0 0 8px rgba(0,191,255,0.25);
+    }
+
+
 
 /* -------------------------------------------------------
    HERO VISUAL — Minecraft block + server previews
    ------------------------------------------------------- */
-.home-hero-visual {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-}
-
-/* 3D-style Minecraft grass block illustration */
 .home-grass-block {
     width: 180px;
     height: 180px;
+    width: 100%;
+    object-fit: contain;
+    mix-blend-mode: lighten;
     filter: drop-shadow(0 20px 40px rgba(91,138,60,0.25));
 }
+
+
 
 /* -------------------------------------------------------
    SERVER PREVIEW CARDS — Mini server status widgets
@@ -174,7 +203,9 @@
     border: 1px solid #2a2a2a;
     border-radius: 12px;
     padding: 12px 16px;
+    margin: 12px;
     width: 220px;
+    box-shadow: 0 0 10px rgba(0,191,255,0.05);
 }
 
     /* Slight offset for the second card to create depth */
@@ -248,7 +279,6 @@
     margin: 48px auto;
     max-width: 1000px;
     padding: 28px 36px;
-    /* Dark green gradient inspired by Minecraft's palette */
     background: linear-gradient(135deg, #1a2a12 0%, #0d1a1a 100%);
     border: 1px solid rgba(122,182,72,0.2);
     border-radius: 18px;
@@ -296,4 +326,106 @@
     color: #7ab648;
     font-size: 13px;
     font-weight: 500;
+    box-shadow: 0 0 6px rgba(122,182,72,0.25);
 }
+
+
+/* DESKTOP LAYOUT */
+@media (min-width: 768px) {
+    .home-hero-inner {
+        padding:0 50px;
+        margin: 0 auto;
+        max-width: 1100px;
+    }
+
+    .home-mc-banner {
+        padding: 20px 50px;
+        margin: 40px auto;
+        max-width: 1100px;
+    }
+}
+
+
+
+/* MOBILE LAYOUT – hero + cards + banner */
+@media (max-width: 768px) {
+
+    /* HERO */
+    .home-hero {
+        min-height: auto;
+        padding: 32px 16px 40px;
+    }
+
+    .home-hero-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 28px;
+        max-width: 100%;
+    }
+
+    .home-hero-content {
+        max-width: 100%;
+    }
+
+    .home-title {
+        font-size: 32px;
+        letter-spacing: -1px;
+        margin-bottom: 12px;
+    }
+
+    .home-sub {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .home-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .home-hero-visual {
+        margin-top: 4px;
+        gap: 12px;
+    }
+
+    .home-grass-block {
+        width: 130px;
+        height: 130px;
+    }
+
+    .home-server-card-preview {
+        width: 100%;
+        max-width: 260px;
+    }
+
+        .home-server-card-preview.offset {
+            margin-left: 0;
+            opacity: 0.85;
+        }
+
+
+    /* MINECRAFT BANNER */
+    .home-mc-banner {
+        margin: 32px 16px 48px;
+        padding: 22px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        border: 1px solid rgba(122,182,72,0.28);
+    }
+
+    .home-mc-pills {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .home-mc-pill {
+        padding: 8px 18px;
+        font-size: 14px;
+    }
+}
+

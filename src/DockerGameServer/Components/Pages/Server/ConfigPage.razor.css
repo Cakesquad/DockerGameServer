@@ -1,0 +1,80 @@
+﻿/* ============================================
+   CONFIG WRAPPER
+   ============================================ */
+.config-wrapper {
+    background: #0f0f0f;
+    border: 2px solid #2d2d2d;
+    border-radius: 0px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ============================================
+   SECTION BOXES
+   ============================================ */
+.config-section {
+    background: #1a1a1a;
+    border: 2px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+    .config-section:hover {
+        border-color: #55ff55;
+        box-shadow: 0 0 8px #55ff55;
+    }
+
+/* ============================================
+   HEADERS
+   ============================================ */
+.config-wrapper h2 {
+    color: #55ff55;
+    text-shadow: 2px 2px #003300;
+}
+
+.config-wrapper h3 {
+    color: #55ff55;
+    text-shadow: 1px 1px #003300;
+    margin-bottom: 14px;
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+.config-input {
+    background: #1a1a1a !important;
+    border: 2px solid #3a3a3a !important;
+    color: #e0e0e0 !important;
+    font-family: "Minecraftia", monospace;
+    padding: 10px 14px;
+    border-radius: 6px !important;
+}
+
+    .config-input:focus {
+        border-color: #55ff55 !important;
+        box-shadow: 0 0 8px #55ff55;
+    }
+
+/* ============================================
+   SAVE BUTTON
+   ============================================ */
+.config-save-btn {
+    background: #55ff55 !important;
+    border: 2px solid #003300 !important;
+    color: #003300 !important;
+    font-family: "Minecraftia", monospace;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 6px !important;
+}
+
+    .config-save-btn:hover {
+        background: #44cc44 !important;
+        box-shadow: 0 0 8px #55ff55;
+    }
+
+.form-label {
+    color: #d0d0d0;
+}

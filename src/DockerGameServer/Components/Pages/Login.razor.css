@@ -123,6 +123,10 @@
             text-decoration: underline;
         }
 
+::deep .error-message {
+    color: #FF3131;
+}
+
 @keyframes pulse {
     from {
         transform: scale(0.9);

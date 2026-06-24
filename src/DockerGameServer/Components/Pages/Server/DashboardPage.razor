@@ -11,7 +11,7 @@ else if (gameServer != null)
 
     <div class="container mt-4">
         <ServerNavigation ServerId="@ServerId">
-            <div class="card-body">
+            <div class="main-card-body">
                 <!-- Header -->
                 <div class="row justify-content-end align-items-center g-3 mb-4">
                     <div class="col">
@@ -31,7 +31,7 @@ else if (gameServer != null)
                         </div>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-outline-secondary text-nowrap" @onclick="CopyToClipboard">
+                        <button class="btn btn-copy text-nowrap" @onclick="CopyToClipboard">
                             <i class="bi bi-clipboard-fill"></i> Kopiér adresse
                         </button>
                     </div>
@@ -40,8 +40,8 @@ else if (gameServer != null)
                 <!-- Info Cards -->
                 <div class="row g-3">
 
-                    <div class="col-md-4">
-                        <div class="card">
+                    <div class="col-md-4 d-flex">
+                        <div class="card flex-fill">
                             <div class="card-body">
                                 <h5 class="card-title">Status</h5>
                                 <p>@ServerState</p>
@@ -49,8 +49,8 @@ else if (gameServer != null)
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card">
+                    <div class="col-md-4 d-flex">
+                        <div class="card flex-fill">
                             <div class="card-body">
                                 <h5 class="card-title">Adresse</h5>
                                 <p>@ServerAddress</p>
@@ -58,8 +58,8 @@ else if (gameServer != null)
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card">
+                    <div class="col-md-4 d-flex">
+                        <div class="card flex-fill">
                             <div class="card-body">
                                 <h5 class="card-title">Server Type</h5>
                                 <p>@gameServer.ServerKind</p>

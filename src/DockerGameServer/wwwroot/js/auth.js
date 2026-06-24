@@ -13,6 +13,8 @@
         const result = await response.json();
         if (result.success) {
             await dotNetRef.invokeMethodAsync('OnLoginSuccess');
+        } else {
+            await dotNetRef.invokeMethodAsync('OnLoginFailed', result.errorMessage)
         }
-    }
+    } 
 }

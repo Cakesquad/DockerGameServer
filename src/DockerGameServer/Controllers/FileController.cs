@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DockerGameServer.Controllers
 {
-	[ApiController]
+	[ApiController, Authorize]
 	[Route("[controller]")]
 	public class FileController(IConfiguration configuration) : ControllerBase
 	{

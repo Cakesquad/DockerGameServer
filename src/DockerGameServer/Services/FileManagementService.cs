@@ -18,7 +18,7 @@
 
 	public class FileManagementService(IConfiguration configuration, FileService fileService)
 	{
-		private readonly string _serversPath = configuration["Servers:path"] ?? throw new InvalidOperationException("Servers:path is not configured.");
+		private readonly string _serversPath = configuration["Servers:Path"] ?? throw new InvalidOperationException("Servers:Path is not configured.");
 
 		public async Task<DirectoryContent> GetDirectoryContentAsync(Guid serverId, string path, bool GoToParent = false)
 		{

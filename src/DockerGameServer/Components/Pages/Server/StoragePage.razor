@@ -1,4 +1,5 @@
 ﻿@page "/server/{ServerId}/storage"
+@using DockerGameServer.Components.Pages.Components
 @attribute [Authorize]
 
 @if (!Loading && gameServer == null)
@@ -9,8 +10,15 @@ else if (gameServer != null)
 {
     <div class="container mt-4">
         <ServerNavigation ServerId="@ServerId">
-            <div class="storage-wrapper">
-                <h2 class="text-nowrap mb-3">Server Storage</h2>
+            <div class="main-card-body">
+                <div class="row justify-content-end align-items-center g-3">
+                    <div class="col-12">
+                        <h2 class="text-nowrap m-0">Server Storage</h2>
+                    </div>
+                    <div class="col-12">
+                        <FolderView ServerId="@_serverId" />
+                    </div>
+                </div>
             </div>
         </ServerNavigation>
     </div>
@@ -21,8 +29,10 @@ else if (gameServer != null)
     [Inject] public UserContext UserContext { get; set; } = default!;
 
     [Parameter] public string ServerId { get; set; } = default!;
+
     private ListGameServer? gameServer { get; set; }
     private bool Loading = true;
+    private Guid _serverId => Guid.Parse(ServerId);
 
     protected override async Task OnInitializedAsync()
     {

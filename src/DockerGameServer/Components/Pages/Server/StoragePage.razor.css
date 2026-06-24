@@ -1,0 +1,16 @@
+﻿/* ============================================
+   STORAGE WRAPPER (simpel version)
+   ============================================ */
+.storage-wrapper {
+    background: #0f0f0f;
+    border: 2px solid #2d2d2d;
+    border-radius: 0px;
+    padding: 30px;
+}
+
+    /* Overskrift */
+    .storage-wrapper h2 {
+        color: #55ff55;
+        text-shadow: 2px 2px #003300;
+        margin: 0;
+    }

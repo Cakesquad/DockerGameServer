@@ -151,3 +151,14 @@ body {
         border-color: #002200;
         box-shadow: 0 0 8px #55ff55;
     }
+
+/* MOBILE FIX FOR MINECRAFT PANEL */
+@media (max-width: 768px) {
+    .minecraft-panel {
+        margin: 20px 16px; /* giver luft i siderne */
+        padding: 20px; /* mindre padding så det ikke føles klemt */
+        max-width: 100%; /* så den ikke prøver at være 520px på små skærme */
+        box-sizing: border-box;
+    }
+}
+

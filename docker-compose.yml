@@ -11,6 +11,7 @@ services:
       - Kestrel__Certificates__Default__Path=/https/cert.pfx
       - Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
       - Servers__Path=/app/servers
+      - Servers__SysPath=/opt/gameservers
       - Security__MasterKey=${SECURITY_MASTERKEY}
       - Security__HashPepper=${SECURITY_HASHPEPPER}
       - ConnectionStrings__PostgresDb=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}

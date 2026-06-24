@@ -307,7 +307,7 @@ namespace DockerGameServer.Services
 				name: $"gameserver-{serverId}",
 				env: env,
 				ports: ports.ToDictionary(p => p.ExternalPort, p => p.InternalPort),
-				volumeBinds: new List<string> { $"{fileService.GetServerDirectory(serverId)}:/data" }
+				volumeBinds: new List<string> { $"{fileService.GetServerSysDirectory(serverId)}:/data" }
 			);
 
 			return result;
